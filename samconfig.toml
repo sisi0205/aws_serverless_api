@@ -1,0 +1,11 @@
+version = 0.1
+[default]
+[default.deploy]
+[default.deploy.parameters]
+stack_name = "ghcn-api"
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-siwzh0l6r4yd"
+s3_prefix = "ghcn-api"
+region = "us-east-2"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+

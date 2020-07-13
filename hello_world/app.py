@@ -1,42 +1,29 @@
+from flask_lambda import FlaskLambda
+from flask import request
 import json
+import boto3
+app = FlaskLambda(__name__)
+ddb = boto3.resource('dynamodb')
+table = ddb.Table('ghcn-api')
 
-# import requests
-
-
-def lambda_handler(event, context):
-    """Sample pure Lambda function
-
-    Parameters
-    ----------
-    event: dict, required
-        API Gateway Lambda Proxy Input Format
-
-        Event doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html#api-gateway-simple-proxy-for-lambda-input-format
-
-    context: object, required
-        Lambda Context runtime methods and attributes
-
-        Context doc: https://docs.aws.amazon.com/lambda/latest/dg/python-context-object.html
-
-    Returns
-    ------
-    API Gateway Lambda Proxy Output Format: dict
-
-        Return doc: https://docs.aws.amazon.com/apigateway/latest/developerguide/set-up-lambda-proxy-integrations.html
-    """
-
-    # try:
-    #     ip = requests.get("http://checkip.amazonaws.com/")
-    # except requests.RequestException as e:
-    #     # Send some context about this error to Lambda Logs
-    #     print(e)
-
-    #     raise e
-
-    return {
-        "statusCode": 200,
-        "body": json.dumps({
-            "message": "hello world",
-            # "location": ip.text.replace("\n", "")
-        }),
+@app.route('/')
+def index():
+    data = {
+        "message": "Hello world"
     }
+    return (
+        json.dumps(data),
+        200,
+        {'Content-Type':"application/json"}
+    )
+@app.route('/hello', methods= ['GET','POST'])
+def put_list_file():
+    if request.method == 'GET':
+        file = table.scan()['Items']
+        return json_response(file)
+    else:
+        table.put_item(Item=request.form.to_dict())
+        return json_response({"message": "student entry created"})
+
+def json_response(data, response_code = 200):
+    return json.dumps(data), response_code, {'Content-Type': 'application/json'}
