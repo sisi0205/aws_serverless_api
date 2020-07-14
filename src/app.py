@@ -1,5 +1,5 @@
 from flask_lambda import FlaskLambda
-from flask import request
+from flask import request, render_template
 import json
 import boto3
 app = FlaskLambda(__name__)
@@ -8,15 +8,18 @@ table = ddb.Table('ghcn-api')
 
 @app.route('/')
 def index():
+    # return render_template('home.html')
     data = {
         "message": "Hello world"
     }
+
     return (
         json.dumps(data),
         200,
         {'Content-Type':"application/json"}
     )
-@app.route('/hello', methods= ['GET','POST'])
+
+@app.route('/table', methods= ['GET','POST'])
 def put_list_file():
     if request.method == 'GET':
         file = table.scan()['Items']
