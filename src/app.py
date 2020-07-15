@@ -24,7 +24,7 @@ def index():
 @app.route('/table', methods= ['GET'])
 def post_file():
     table_results = table.scan()['Items']
-    print(json.dumps(table_results))
+    # print(json.dumps(table_results))
     return json_response(table_results)
 
 

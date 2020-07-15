@@ -54,6 +54,8 @@ Resources:
           Properties:
             Path: /table
             Method: get
+
+
   S3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -61,6 +63,7 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
+
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
