@@ -56,6 +56,28 @@ Resources:
           Properties:
             Path: /table
             Method: get
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl: PublicRead
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+  BucketPolicy:
+    Type: AWS::S3::BucketPolicy
+    Properties:
+      PolicyDocument:
+        Statement:
+          - Sid: PublicReadForGetBucketObjects
+            Effect: Allow
+            Principal: '*'
+            Action: s3:GetObject
+            Resource: !Join
+              - ''
+              - - 'arn:aws:s3:::'
+                - !Ref S3Bucket
+                - /*
+      Bucket: !Ref S3Bucket
 
 
   ghcnTable:
@@ -87,3 +109,11 @@ Outputs:
   getDataFunctionIamRole:
     Description: "Implicit IAM Role created for Hello World function"
     Value: !GetAtt getDataFunctionRole.Arn
+
+  WebsiteURL:
+    Value: !GetAtt S3Bucket.WebsiteURL
+    Description: URL for website hosted on S3
+
+  ApiGWURL:
+    Value: https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Stage
+    Description: API Gateway endpoint
