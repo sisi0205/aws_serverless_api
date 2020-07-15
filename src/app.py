@@ -21,10 +21,12 @@ def index():
         {'Content-Type':"application/json"}
     )
 
-@app.route('/table', methods= ['POST'])
+@app.route('/table', methods= ['GET'])
 def post_file():
-    table_results = table.scan()
+    table_results = table.scan()['Items']
+    print(json.dumps(table_results))
     return json_response(table_results)
+
 
 @app.route('/put_list',methods= ['GET','POST'])
 def put_list_file():

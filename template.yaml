@@ -15,12 +15,14 @@ Resources:
   HelloAPI:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: stage1
+      StageName: dev
       DefinitionBody:
         swagger: 2.0
         info:
           title:
             Ref: AWS::StackName
+        x-amazon-apigateway-binary-media-types:
+          - '*/*'
         paths:
           /table:
             get:
@@ -54,8 +56,6 @@ Resources:
           Properties:
             Path: /table
             Method: get
-            RestApiId:
-              Ref: HelloAPI
 
 
   ghcnTable:
