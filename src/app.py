@@ -2,9 +2,11 @@ from flask_lambda import FlaskLambda
 from flask import request, render_template
 import json
 import boto3
+import os
 app = FlaskLambda(__name__)
 ddb = boto3.resource('dynamodb')
 table = ddb.Table('ghcn-api')
+# table = ddb.Table(os.environ['MyTableName'])
 
 @app.route('/')
 def index():
@@ -19,7 +21,12 @@ def index():
         {'Content-Type':"application/json"}
     )
 
-@app.route('/table', methods= ['GET','POST'])
+@app.route('/table', methods= ['POST'])
+def post_file():
+    table_results = table.scan()
+    return json_response(table_results)
+
+@app.route('/put_list',methods= ['GET','POST'])
 def put_list_file():
     if request.method == 'GET':
         file = table.scan()['Items']

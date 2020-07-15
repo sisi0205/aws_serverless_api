@@ -5,26 +5,31 @@ Description: >
 
   Sample SAM Template for ghcn-api
 
+
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 3
 
 Resources:
-  ghcnTable:
-    Type: AWS::DynamoDB::Table
+  HelloAPI:
+    Type: AWS::Serverless::Api
     Properties:
-      TableName: ghcn-api
-      AttributeDefinitions:
-        - AttributeName: Key
-          AttributeType: S
-      KeySchema:
-        - AttributeName: Key
-          KeyType: HASH
-      ProvisionedThroughput:
-        ReadCapacityUnits: 5
-        WriteCapacityUnits: 5
-
+      StageName: stage1
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          title:
+            Ref: AWS::StackName
+        paths:
+          /table:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getDataFunction.Arn}/invocations
+              responses: {}
 
   getDataFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
@@ -49,6 +54,24 @@ Resources:
           Properties:
             Path: /table
             Method: get
+            RestApiId:
+              Ref: HelloAPI
+
+
+  ghcnTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: ghcn-api
+      AttributeDefinitions:
+        - AttributeName: Key
+          AttributeType: S
+      KeySchema:
+        - AttributeName: Key
+          KeyType: HASH
+      ProvisionedThroughput:
+        ReadCapacityUnits: 5
+        WriteCapacityUnits: 5
+
 
 
 Outputs:
