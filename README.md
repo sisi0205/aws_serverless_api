@@ -16,7 +16,7 @@ create-react-app website
 ```
 * start the website
 
-```
-cd test-website
+```bash
+cd website
 yarn start
 ```
