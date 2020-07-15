@@ -38,4 +38,4 @@ def put_list_file():
         return json_response({"message": "student entry created"})
 
 def json_response(data, response_code = 200):
-    return json.dumps(data), response_code,{"headers": { "Access-Control-Allow-Origin": "*" }}, {'Content-Type': 'application/json'}
+    return json.dumps(data), response_code,{"headers": { "Access-Control-Allow-Origin": "*" }}

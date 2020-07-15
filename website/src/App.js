@@ -18,9 +18,19 @@ function App() {
         >
           Hello world
         </a>
-        <p> this is update </p>
+
+        <a
+          className="App-link"
+          href="https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Stage/table"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          table
+        </a>
+
       </header>
     </div>
+
   );
 }
 
