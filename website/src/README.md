@@ -100,8 +100,48 @@ So update `<TodosList />` so you have:
 <TodosList todos={this.state.todos} handleChangeProps={this.handleChange} />
 ```
 >Note: We are using this.handleChange to reference the handleChange() method because it is part of the class.
-Now, you have the handleChange() method assigned to the handleChangeProps. Its data can be accessed through props in the TodosList component.
 
-From there, we can pass it to the TodoItem component.
+Now, you have the `handleChange()` method assigned to the `handleChangeProps`. Its data can be accessed through props in the `TodosList` component.
 
-Let’s update the <TodoItem /> instance in the TodosList.js file so you have:
+From there, we can pass it to the `TodoItem` component.
+
+Let’s update the `<TodoItem />` instance in the `TodosList.js` file so you have:
+
+```javascipt
+<TodoItem
+  key={todo.id}
+  todo={todo}
+  handleChangeProps={this.props.handleChangeProps}
+/>
+```
+
+At this point, the `handleChange()` data can be accessed from the `TodoItem` component.
+
+So update the `onChange` handler in the `TodoItem` component so you have:
+```javascript
+onChange={() => this.props.handleChangeProps()}
+```
+This time, make sure you have parenthesis,**()** attached to the `handleChangeProps`.
+
+Now, if you click any of the checkboxes, the `onChange` event will trigger and will call the `handleChange()` method in the parent component, `TodoContainer`.
+
+For now, we are only logging a text in the console.
+
+Let’s go a step further.
+
+We need to identify which one of the checkboxes is clicked. To do this, we need to pass along their respective `ids` through the callback function.
+
+Update the `onChange` handler in the `TodoItem` component to include the `id`.
+```javascript
+onChange={() => this.props.handleChangeProps(this.props.todo.id)}
+```
+Remember, just like the `title` and the `completed` value, we also have access to the `id` in this component.
+Then go inside the `TodoContainer` component and update the `handleChange` method.
+
+```javascript
+handleChange = (id) => {
+  console.log("clicked", id);
+};
+```
+
+
