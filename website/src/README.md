@@ -173,4 +173,84 @@ On looping through the todos data, we check if any of the items id matches the c
 
 Save the file and check your application. You should be able to toggle the checkboxes.
 
+### Deleting items from the todos
+This will be similar to how we handled the input checkboxes. Here also, the todos items live in the `TodoContainer`, while the delete `button` will live in the `TodoItem` component.
+
+That means we will be raising an event from the `TodoItem` component and move up levels until we get to the `TodoContainer` component where the event will be handled.
+
+Let’s get down.
+
+Start by adding a delete button in the `TodoItem` component.
+
+So add this `button` element below the `input` tag:
+```javascript
+<button>Delete</button>
+```
+We will update it later.
+
+As usual, we will enable communication between these components to raise an event.
+
+So go inside the `TodoContainer` component and add a `delTodo` method above the `render()`.
+```javascript
+delTodo = id => {
+  console.log("deleted", id);
+};
+```
+Still in the component, update the `<TodosList />` to include:
+```
+deleteTodoProps={this.delTodo}
+```
+```javascript
+<TodosList
+  todos={this.state.todos}
+  handleChangeProps={this.handleChange}
+  deleteTodoProps={this.delTodo}
+/>
+```
+
+Save the file and move a level down inside the `TodosList` component and update the `<TodoItem />` so you have:
+```javascript
+<TodoItem
+  key={todo.id}
+  todo={todo}
+  handleChangeProps={this.props.handleChangeProps}
+  deleteTodoProps={this.props.deleteTodoProps}
+/>
+```
+Finally, back in the `TodoItem` component. Update the `button` element to include an `onClick` event handler that will trigger the `delTodo` method in the parent component.
+
+You should have this:
+```javascript
+<button onClick={() => this.props.deleteTodoProps(this.props.todo.id)}>
+  Delete
+</button>
+```
+At the moment, we are logging "deleted" text alongside the id of the deleted items.
+
+Up to this point, we are repeating what we did for the checkbox. If it's not clear, revisit the earlier explanation.
+
+Next, we will manipulate the state and remove any of the deleted items from the list. The way we do that is by using the `filter()` method.
+
+This method is also a higher-order function just like the `map()` method. It returns a new array by applying a condition on every array element.
+
+In this case, we only want to return the todos items that do not match the id that will be passed in – i.e the clicked id. Any id that matches will be deleted.
+
+Now update the `delTodo` method so you have:
+```javascript
+delTodo = id => {
+  this.setState({
+    todos: [
+      ...this.state.todos.filter(todo => {
+        return todo.id !== id;
+      })
+    ]
+  });
+};
+```
+
+
+
+
+
+
 
