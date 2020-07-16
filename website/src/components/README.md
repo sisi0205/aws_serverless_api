@@ -243,3 +243,25 @@ export default TodoItem
 ```
 
 ### Creating the Function Component
+This type is the simplest form of React component because it is primarily concerned with how things look.
+
+But now, things have changed with the [introduction of React Hooks](https://ibaslogic.com/blog/react-hooks-tutorial/).
+Up to this moment, we have been using the class-based component to describe the UI.
+Back to our application.
+
+If you take a look at the components we created, only one of them is holding the state data. That is the parent component, TodoContainer.
+That means we will retain this component as a class-based.
+The other components which are presently class components can also be function components. This is because they do not hold state data.
+For clarity, let’s convert one of the class component, TodoItem, to a function component.
+
+#### Converting Class-Based Component to Function Component
+In the TodoItem.js file, replace the code with the following:
+```javascript
+import React from "react"
+
+function TodoItem(props) {
+  return <li>{props.todo.title}</li>
+}
+
+export default TodoItem
+```
