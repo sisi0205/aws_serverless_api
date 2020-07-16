@@ -292,8 +292,58 @@ return (
 
 We are still doing the same thing. The value `prop` on the select element makes it a `controlled` input. Through this prop, we have access to the selected option at every point. If you want to display a default item (for instance, infinity) from the select option, your state should include the item like so:
 
+## The checkbox Input
+Unlike the other input fields, the checkbox uses a `checked` prop (which is a `Boolean` attribute) instead of the value prop. The idea is that a checkbox is either checked or not.
 
+Now, if you take a look at the `handleChange` function, we only make provision for the inputs that have `value` prop through `e.target.value`
+```javascript
+const [state, setState] = useState({
+  ...
+  isChecked: false,
+});
+```
+Here, we assign a Boolean value of `false` so that the input field is unchecked by default.
 
+Next, add input checkbox just before the closing </form> tag.
+```javascript
+return (
+  ...
+    <form>
+      ...
+      <br /><br />
+      <label>
+        <input
+          type="checkbox"
+          name="isChecked"
+          checked={state.isChecked}
+          onChange={handleChange}
+        />
+{" "}
+        Is Checked?
+      </label>
+    </form>
+    <h5>
+      Name: {state.fname} {state.lname}
+    </h5>
+    <h5>My favorite car brand: {state.carBrand}</h5>
+    <p>Message: {state.message}</p>
+    <h5>Is it checked? : {state.isChecked ? "Yes" : "No"}</h5>
+  </div>
+);
+```
+
+Finally, update the handleChange function so you have:
+```javascript
+const handleChange = e => {
+  const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
+  setState({
+    ...state,
+    [e.target.name]: value,
+  })
+}
+```
+
+#### What just happened?
 
 
 

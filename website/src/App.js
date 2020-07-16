@@ -5,9 +5,12 @@ function App() {
   const [state, setState] = useState({
     fname: "",
     lname: "",
+    carBrand: "",
+    isChecked: false,
   })
 
   const handleChange = e => {
+    const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
     setState({
       ...state,
       [e.target.name]: e.target.value,
@@ -60,12 +63,25 @@ function App() {
           <option value="audi">Audi</option>
         </select>
       </label>
+      <br /><br />
+      <label>
+        <input
+          type="checkbox"
+          name="isChecked"
+          checked={state.isChecked}
+          onChange={handleChange}
+        />
+{" "}
+        Is Checked?
+      </label>
 
       </form>
       <h5>
         Name: {state.fname} {state.lname}
       </h5>
+      <h5>My favorite car brand: {state.carBrand}</h5>
       <p>Message: {state.message}</p>
+      <h5>Is it checked? : {state.isChecked ? "Yes" : "No"}</h5>
     </div>
   )
 }
