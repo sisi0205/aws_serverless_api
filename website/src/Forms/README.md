@@ -414,8 +414,51 @@ Notice that the value prop in these inputs are static unlike that of text inputs
 
 And finally, with the `checked` prop, we are saying that if the condition assigned is true, that radio button should be checked.
 
+## Range Input Type
+You can use this type of input to filter a list of items based on numeric values (on a larger application). But here, we will set up an input of this type to display dynamic prices on a range of 0 - $50.
 
+This is going to be a quick one because they all follow the same approach. Start by adding another property in the state. I call it `price`.
+```javascript
+const [state, setState] = useState({
+  ...
+  price: 0,
+});
+```
+Then, add this input field just before the closing </form> tag:
 
+```javascript
+return (
+  ...
+    <form>
+      ...
+      <br /><br />
+      <label>
+        Price (between 0 and 50):
+        <input
+          type="range"
+          name="price"
+          min="0"
+          max="50"
+          value={state.price}
+          onChange={handleChange}
+        />
+      </label>
+    </form>
+    ...
+    <h5>Price : ${state.price}</h5>
+  </div>
+);
+```
+
+Save your file and test your input.
+
+The code should be self-explanatory if you have followed along.
+
+To reiterate,
+
+The first step to handle form inputs in React is to make it a controlled input. And you can do that by having the component state manage the input. Then, you assign the state to the value or checked prop depending on the input type. From there, you have an onChange handler that listens to changes in the input and control its state.
+
+And finally, if you have more than one input fields, you’d want to assign to the name prop of the input its corresponding state name. This allows you to manage your fields with a single handler function.
 
 
 
