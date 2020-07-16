@@ -175,3 +175,36 @@ At this point, you now have the state data in the todos prop. Thanks to this lin
 <TodosList todos={this.state.todos} />
 ```
 #### access the data from props
+```javascript
+class TodosList extends React.Component {
+  render() {
+    return (
+      <div>
+//        <TodosList todos={this.state.todos} />
+        {this.props.todos.map(todo => (
+          <li>{todo.title}</li>
+        ))}
+      </div>
+    )
+  }
+}
+export default TodosList
+```
+Notice how we accessed the state data from within the child component, TodosList, using this.props.todos.
+
+Always remember, with props, we can access state data at different levels of the component hierarchy. This is called prop drilling.
+It has to do with manually getting data from component A down to component B through the props. Where component A is the parent of B.
+
+As a recap,
+
+*The todos data that come from the state of the TodoContainer component is passed as props using todos={this.state.todos}. Then, we accessed it through this.props.todos from within the TodosList component.*
+#### fix console warning 
+Whenever you map through something, a list is created. React want each child in the list to have a unique key prop. This helps React to identify which items have changed, added or removed.
+
+To add this unique key prop, we will take advantage of the id we provided in the TodoContainer state. We can access these id the same way we accessed the title.
+```javascript
+<li key={todo.id}>{todo.title}</li>
+```
+
+#### Add a to do item 
+

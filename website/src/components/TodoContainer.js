@@ -26,7 +26,7 @@ state = {
     return (
       <div>
         {this.state.todos.map(todo => (
-       <li>{todo.title}</li>
+       <li key = {todo.title}>{todo.title}</li>
       ))}
       </div>
     )
