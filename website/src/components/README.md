@@ -265,3 +265,47 @@ function TodoItem(props) {
 
 export default TodoItem
 ```
+
+So what changes?
+
+Here, we created a function with the same component name instead of the ES6 class that extends React.Component. This functional component does not require a render() method which is part of the lifecycle method (coming to that).
+
+Also, notice that this.props in the class component was replaced by props. And to use this props, we included it as the function argument.
+
+As you start with React, you may not always know whether to use a function or class component. A lot of times, you will realize after a while that you chose the wrong type. But as you create more components, making this choice will get easier.
+
+Well, this has been solved as we can now create React components ONLY with functions. Thanks to React Hooks.
+#### add header
+Let’s create the Header component.
+
+This is pretty straight forward. So, add the following code in the Header.js file:
+```javascript
+import React from "react"
+
+const Header = () => {
+  return (
+    <header>
+      <h1>Simple Todo App</h1>
+      <p>Please add to-dos item(s) through the input field</p>
+    </header>
+  )
+}
+
+export default Header
+```
+Next, go inside the TodoContainer component and import the file at the top like so:
+```javascript
+import Header from "./Header"
+```
+
+Then, call its instance, <Header /> within the render() method so you have:
+```javascript
+render() {
+  return (
+    <div>
+      <Header />
+      <TodosList todos={this.state.todos} />
+    </div>
+  );
+}
+```
