@@ -116,6 +116,55 @@ We don’t want that. We want to manage all the state with a single handler func
 So, instead of passing a simple string in the `useState` Hook as we have it at the moment, we will be passing an object containing all the related state data.
 
 In the src/App.js file, let’s update the React form component so you have:
+```javascript
+import React, { useState } from "react"
+import "./App.css"
+
+function App() {
+  const [state, setState] = useState({
+    fname: "",
+    lname: "",
+  })
+
+  const handleChange = e => {
+    setState({
+      ...state,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  return (
+    <div>
+      <h1>React Form Handling</h1>
+      <form>
+        <label>
+          First Name:{" "}
+          <input
+            type="text"
+            name="fname"
+            value={state.fname}
+            onChange={handleChange}
+          />
+        </label>{" "}
+        <label>
+          Last Name:{" "}
+          <input
+            type="text"
+            name="lname"
+            value={state.lname}
+            onChange={handleChange}
+          />
+        </label>
+      </form>
+      <h5>
+        Name: {state.fname} {state.lname}
+      </h5>
+    </div>
+  )
+}
+
+export default App
+```
 
 
 
