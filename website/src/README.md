@@ -100,4 +100,8 @@ So update `<TodosList />` so you have:
 <TodosList todos={this.state.todos} handleChangeProps={this.handleChange} />
 ```
 >Note: We are using this.handleChange to reference the handleChange() method because it is part of the class.
+Now, you have the handleChange() method assigned to the handleChangeProps. Its data can be accessed through props in the TodosList component.
 
+From there, we can pass it to the TodoItem component.
+
+Let’s update the <TodoItem /> instance in the TodosList.js file so you have:
