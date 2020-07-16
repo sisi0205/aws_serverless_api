@@ -45,6 +45,21 @@ function App() {
           onChange={handleChange}
         />
        </label>
+       <br /><br />
+      <label>
+        Pick your favorite car brand:
+        <select
+          name="carBrand"
+          value={state.carBrand}
+          onChange={handleChange}
+        >
+          <option value="mercedes">Mercedes</option>
+          <option value="bmw">BMW</option>
+          <option value="maserati">Maserati</option>
+          <option value="infinity">Infinity</option>
+          <option value="audi">Audi</option>
+        </select>
+      </label>
 
       </form>
       <h5>

@@ -245,6 +245,52 @@ return (
 );
 ```
 
+## The Select Input Field
+
+This is not different from the other input fields. As usual, we can make it a controlled input by first have the state manage the input data. Then add a `value` prop to the element and finally update it through the `onChange` handler function (but in our case, we don’t have to do anything here because we have the logic set already).
+
+So let’s create a dropdown list with options to select car brands.
+
+As expected, add a new property in the state. In my case, I will call it `carBrand`.
+
+```javascript
+const [state, setState] = useState({
+  ...
+  carBrand: "",
+});
+```
+Then, add the select element just before the closing </form> tag:
+```javascript
+return (
+  ...
+    <form>
+      ...
+      <br /><br />
+      <label>
+        Pick your favorite car brand:
+        <select
+          name="carBrand"
+          value={state.carBrand}
+          onChange={handleChange}
+        >
+          <option value="mercedes">Mercedes</option>
+          <option value="bmw">BMW</option>
+          <option value="maserati">Maserati</option>
+          <option value="infinity">Infinity</option>
+          <option value="audi">Audi</option>
+        </select>
+      </label>
+    </form>
+    <h5>
+      Name: {state.fname} {state.lname}
+    </h5>
+    <h5>My favorite car brand: {state.carBrand}</h5>
+    <p>Message: {state.message}</p>
+  </div>
+);
+```
+
+We are still doing the same thing. The value `prop` on the select element makes it a `controlled` input. Through this prop, we have access to the selected option at every point. If you want to display a default item (for instance, infinity) from the select option, your state should include the item like so:
 
 
 
