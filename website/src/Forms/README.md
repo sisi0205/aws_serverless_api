@@ -68,6 +68,64 @@ Now, if you try to write anything in the text input field, nothing will happen. 
 
 ### update with `onChange` event handler
 Update the code to include an onChange event handler.
+```javascript
+import React, { useState } from "react"
+import "./App.css"
+
+function App() {
+  const [fname, setFname] = useState("")
+
+  const handleChange = e => {
+    setFname(e.target.value)
+  }
+
+  return (
+    <div>
+      <h1>React Form Handling</h1>
+      <form>
+        <label>
+          First Name:{" "}
+          <input type="text" value={fname} onChange={handleChange} />
+        </label>
+      </form>
+      <h5>First name: {fname}</h5>
+    </div>
+  )
+}
+
+export default App
+```
+#### What is happening?
+React needs an `onChange` handler to keep track of any changes in the field. Anytime you write something in the input field, this `onChange` event will trigger and then call its handleChange function that will re-render the state using `setFname` function.
+
+In this function, we are updating the state variable, `fname` on every keystroke by passing to it the current value of the input field using `e.target.value`.
+
+>Remember we can retrieve the value of whatever input from the predefined parameter,` e`. It’s an object that holds information about the input action or event.
+
+At this point, we have a controlled input field where its state is being managed by its component. This is the simplest React form example.
+
+## Adding Multiple Input Fields
+In reality, you’ll be working with multiple input fields in your React application. In this scenario, we will make a simple adjustment not only to the handler function but also to the `input` element.
+
+Let’s see this in action by adding another input field that collects the user’s last name.
+
+We could decide to set up another `useState` Hook for the last name input. Then go ahead and assign its state variable to the `value` prop. But this approach will require us to define another handler function to update the input state.
+
+We don’t want that. We want to manage all the state with a single handler function.
+
+So, instead of passing a simple string in the `useState` Hook as we have it at the moment, we will be passing an object containing all the related state data.
+
+In the src/App.js file, let’s update the React form component so you have:
+
+
+
+
+
+
+
+
+
+
 
 
 
