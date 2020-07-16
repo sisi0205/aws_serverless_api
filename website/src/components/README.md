@@ -105,7 +105,7 @@ Think of the state as the data you can store to a specific component. This data 
 
 So anytime you want some data to be updated whenever user perform some action like updating input field, toggling menu button etc., then you will make use of the state.
 
-### Adding state
+#### Adding state
 As we have it in the app diagram, the InputTodo component will carry the responsibility of accepting the user’s input. That means we will need a place to store the data (in this case, the store is the state) received through the input. From there, we can display the data in the frontend.
 
 Likewise, the TodosList component will be accessing the state data and display its todos items. Also, the TodoItem component (which holds the checkbox and delete button) will be accessing the data to update the checkbox and also remove items from the state.
@@ -153,4 +153,25 @@ render() {
    </div>
  );
 }
+```
+#### pass data to List 
+What we want to do is to pass the state data from the TodoContainer to the TodosList component. Recall that we can pass data down the tree through props. And I mentioned that the prop is just like the HTML attribute.
+create a `TodosList.js`
+```javascript
+import React from "react"
+
+class TodosList extends React.Component {
+  render() {
+    return (
+      <div>
+        <TodosList todos={this.state.todos} />
+      </div>
+    )
+  }
+}
+export default TodosList
+```
+At this point, you now have the state data in the todos prop. Thanks to this line:
+```javascript
+<TodosList todos={this.state.todos} />
 ```
