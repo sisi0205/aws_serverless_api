@@ -144,4 +144,33 @@ handleChange = (id) => {
 };
 ```
 
+### Updating the state using the setState() method
+Our aim here is to change the state of the checkbox whenever it is clicked. In React, we do not modify the state directly. Instead, we update through a method we inherited by extending `React.Component`.
+
+This method is called `setState()`. It tells React that we are updating the state.
+
+React figures out what part of the state is changed and then update ONLY that part in the real DOM.
+
+All we need to do in the `handeChange` method is to check if the `id` of the clicked checkbox matches any of the todos items id. If it does, we will flip the `completed` value from true to `false` and `vice versa`.
+
+Now, go inside the `TodoContainer` component and update the `handeChange` method so it looks like this:
+```javascript
+handleChange = id => {
+  this.setState({
+    todos: this.state.todos.map(todo => {
+      if (todo.id === id) {
+        todo.completed = !todo.completed;
+      }
+      return todo;
+    })
+  });
+};
+```
+
+The `id` on the first line comes from the `TodoItem` component (it contains the checked id). You know that already!
+
+On looping through the todos data, we check if any of the items id matches the checked id. Then, we flip the completed value.
+
+Save the file and check your application. You should be able to toggle the checkboxes.
+
 
