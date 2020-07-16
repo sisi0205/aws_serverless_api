@@ -4,7 +4,7 @@ import Header from "./Header"
 
 
 class TodoContainer extends React.Component {
-state = {
+  state = {
  todos: [
    {
      id: 1,
@@ -24,13 +24,11 @@ state = {
  ]
 };
   render() {
-    return (
-      <div>
-        <Header />
-        {this.state.todos.map(todo => (
-       <li key = {todo.title}>{todo.title}</li>
-      ))}
-      </div>
+     return (
+     <div>
+     <Header />
+     <TodosList todos={this.state.todos} />
+     </div>
     )
   }
 }

@@ -1,467 +1,86 @@
-# [Handling Form Inputs in React – A Simple Step-by-Step Guide](https://ibaslogic.com/blog/simple-guide-to-react-form/)
-Ok, Let’s start by displaying a simple text input in the frontend. So go inside the src/App.js file and replace the code with this:
+#[React Tutorial: Getting Started with React Form and Handling Event](https://ibaslogic.com/blog/react-form-handling/)
 
-```javascript
-import React from "react"
-import "./App.css"
+[github](https://github.com/Ibaslogic/simple-todo-app)
+In the [first part of the React tutorial](https://ibaslogic.com/blog/react-tutorial-for-beginners/) for beginners, we covered some of the basics of React; set up React working environment and started writing our Todos application.
+Now, in this part, we will take a look at integrating form in our React app, you will also get to know how to raise and handle events in React
+But before you go ahead, I will advise you to take a look at how to handle [form inputs](https://ibaslogic.com/blog/simple-guide-to-react-form/) fields in React. There, you will learn how the common input types such as checkbox, text, textarea, select input, radio and range work in React.
 
-function App() {
-  return (
-    <div>
-      <h1>React Form Handling</h1>
-      <form>
-        <label>
-          First Name: <input type="text" />
-        </label>
-      </form>
-    </div>
-  )
-}
+## Adding checkboxes to the Todo items
 
-export default App
+### uncontrolled 
+Open the src/components/TodoItem.js file. Add the checkbox input just before the {this.props.todo.title} in the li element.
+```
+<input type="checkbox" />
 ```
 
-## Uncontrolled and Controlled Input
-### uncontrolled Input 
-At the moment, just like pure HTML form, this input element maintains its internal state. That is why we can write something in it by default. In this case, we call this type of input an **uncontrolled input**.
-### controlled Input 
-In React, it is the responsibility of the component rendering the form to control the input state. This way, the input would no longer listen to its internal state but the state declared in its component. By so doing, we are making the component state a single source of truth.
+By default, the input type (i.e checkboxes) are being handled by the DOM – i.e they have the default HTML behaviour. That is why you can toggle the boxes.
 
-When you have this type of input, then you have a **controlled input**.
-#### How does it work?
-Depending on your component type, you will store your input data in the component state. Here, we will be using [the React Hook](https://ibaslogic.com/blog/react-hooks-tutorial/) to manage our form data. However, the approach is the same if you are using a class-based component. All you have to do is to declare a state object where your data would live.
+This type of input is called `uncontrolled` input. This is not the case with React, the input fields are meant to be `controlled`.
 
-From there, you will set up logic to listen to changes in the input and control it (i.e update the state) using the onChange event.
-This way, you will always get up-to-date value as you will see in a moment.
-The first step is to have the state manage the user’s input. So go ahead and update the src/App.js file to include the state.
-```javascript
-import React, { useState } from "react"
-import "./App.css"
+This takes us to another important subtopic.
 
-function App() {
-  const [fname, setFname] = useState("")
+### Controlled Component
+To make the input field controllable, the input data (in this case, toggling of the checkbox) has to be handled by the component state and not the browser DOM.
 
-  return (
-    <div>
-      <h1>React Form Handling</h1>
-      <form>
-        <label>
-          First Name: <input type="text" value={fname} />
-        </label>
-      </form>
-      <h5>First name: {fname}</h5>
-    </div>
-  )
-}
+With this, the state will serve as a **single source of truth**. Meaning, the input checkbox would no longer listens to its internal state (i.e the browser DOM) but the state in your app. This is necessary because the component state will not change unless you change it.
 
-export default App
-```
+If you take a look at the `state` object in the parent component, we have a Boolean value (`true` or `false`) assigned to every completed key in the `todos` data.
 
-### add a state
-In the code, we added a state using the `useState` Hook and assigned a default empty string to the state variable, `fname`. This is similar to declaring a state object in a class-based component.
-
-The second item return by the `useState` Hook (I called it `setFname`, but you can name it anything you like) is a function that will allow us to update the state value.
-
-Now, for us to make the input field a controlled input, we assigned the state variable (which contains a default empty string) to the `value` prop.
-
-Now, if you try to write anything in the text input field, nothing will happen. This is because the value prop is assigned a state variable whose value is set to empty string. And this is being forced on the input.
-
-### update with `onChange` event handler
-Update the code to include an onChange event handler.
-```javascript
-import React, { useState } from "react"
-import "./App.css"
-
-function App() {
-  const [fname, setFname] = useState("")
-
-  const handleChange = e => {
-    setFname(e.target.value)
-  }
-
-  return (
-    <div>
-      <h1>React Form Handling</h1>
-      <form>
-        <label>
-          First Name:{" "}
-          <input type="text" value={fname} onChange={handleChange} />
-        </label>
-      </form>
-      <h5>First name: {fname}</h5>
-    </div>
-  )
-}
-
-export default App
-```
-#### What is happening?
-React needs an `onChange` handler to keep track of any changes in the field. Anytime you write something in the input field, this `onChange` event will trigger and then call its handleChange function that will re-render the state using `setFname` function.
-
-In this function, we are updating the state variable, `fname` on every keystroke by passing to it the current value of the input field using `e.target.value`.
-
->Remember we can retrieve the value of whatever input from the predefined parameter,` e`. It’s an object that holds information about the input action or event.
-
-At this point, we have a controlled input field where its state is being managed by its component. This is the simplest React form example.
-
-## Adding Multiple Input Fields
-In reality, you’ll be working with multiple input fields in your React application. In this scenario, we will make a simple adjustment not only to the handler function but also to the `input` element.
-
-Let’s see this in action by adding another input field that collects the user’s last name.
-
-We could decide to set up another `useState` Hook for the last name input. Then go ahead and assign its state variable to the `value` prop. But this approach will require us to define another handler function to update the input state.
-
-We don’t want that. We want to manage all the state with a single handler function.
-
-So, instead of passing a simple string in the `useState` Hook as we have it at the moment, we will be passing an object containing all the related state data.
-
-In the src/App.js file, let’s update the React form component so you have:
-```javascript
-import React, { useState } from "react"
-import "./App.css"
-
-function App() {
-  const [state, setState] = useState({
-    fname: "",
-    lname: "",
-  })
-
-  const handleChange = e => {
-    setState({
-      ...state,
-      [e.target.name]: e.target.value,
-    })
-  }
-
-  return (
-    <div>
-      <h1>React Form Handling</h1>
-      <form>
-        <label>
-          First Name:{" "}
-          <input
-            type="text"
-            name="fname"
-            value={state.fname}
-            onChange={handleChange}
-          />
-        </label>{" "}
-        <label>
-          Last Name:{" "}
-          <input
-            type="text"
-            name="lname"
-            value={state.lname}
-            onChange={handleChange}
-          />
-        </label>
-      </form>
-      <h5>
-        Name: {state.fname} {state.lname}
-      </h5>
-    </div>
-  )
-}
-
-export default App
-```
-
-#### What is happening?
-First, you will notice a significant change in the code. We started by modifying the `useState` Hook to include an additional input data. From there, we have access to the first and last name through state.`fname` and state.`lname` as used in the value prop of their respective input element.
-
-In these `input` elements, we’ve added a `name` prop that holds also their respective state name (i.e `fname` and `lname`). This is very important.
-
-Now, let’s focus on the `handleChange` function. Here, we are using the `setState` function to update the inputs state.
+So go inside the `TodoItem.js` file and add a `checked prop` to the `input` checkbox and then assign {`this.props.todo.completed`}.
 
 ```javascript
-const handleChange = e => {
-  setState({
-    ...state,
-    [e.target.name]: e.target.value,
-  })
-}
+<input type="checkbox" checked={this.props.todo.completed} />
 ```
 
-In this function, we are simply assigning to the element that is being targeted (through `[e.target.name]`) their corresponding values.
+Remember, just like the `title`, we have access to the `completed` value in this component.
 
-For instance, if the field for the first name changes, the `fname` assigned to the `name` prop replaces `[e.target.name]` like so:
-```javascript
-setState({
-  fname: e.target.value,
-})
+At this point, you have succeeded in making the input checkbox a `controlled` input because it now listens only to the state in your application.
+
+Now if you try to toggle any of the checkboxes, nothing will happen. This is because each of the checked attributes is assigned a `value` equal to the current value of the state.
+
+Remember, only the first task is assigned to be completed.
+
+We need a way to change the state whenever users click on the checkboxes. React already gives us a hint through the Console tab of the browser DevTools.
+
+If you open it, you'll see a warning displayed as a result of the added `checked` attribute.
+
+React is telling us to add an `onChange` handler to keep track of any changes in the field. Else, it wouldn’t know if the input field is checked or not.
+
+So let’s update the input tag in the `TodoItem.js` file to include the handler.
+
+```java
+<input
+  type="checkbox"
+  checked={this.props.todo.completed}
+  onChange={() => console.log("clicked")}
+/>
 ```
 
-Anytime we group related data as we have it in the state variable, the state returned by the `useState` Hook is not merged with that of the update passed to it. In other words, the `useState` Hook doesn’t merge the old and new state. Instead, it overrides the entire state with that of the current
+For the meantime, we are assigning to the handler, a callback function that will log a "clicked" text in the console whenever the checkbox is clicked.
 
-For the meantime, comment-out the `…state` from the function so you have:
-```javascript
-const handleChange = e => {
-  setState({
-    // ...state,
-    [e.target.name]: e.target.value,
-  })
-}
-```
+Now, instead of logging text in the console, we want to toggle the checkboxes anytime they are being clicked.
 
-Save your file once again and try to write something in both input fields. You’ll see that they are overriding each other.
+To do this, we need to understand how to raise and handle events
 
-So to avoid this scenario, we merge them by spreading the entire state object using the three dots before the state and overriding the part of it.
+### Raising and Handling Events
+In our app, the parent component, `TodoContainer` is the one that holds the state data. This component, therefore, is the ONLY one that can change it.
 
-## Adding the TextArea field
-Unlike regular HTML where we define the text in between the `textarea` element. In React, the `textarea` is defined as a self-closing element just like the `input` element.
+Meaning the `TodoItem` component, which is the one handling the checkboxes, cannot change the state data in the parent component, `TodoContainer`.
 
-React is trying to maintain consistency with these inputs. This is good because we can as well use the `value` prop to get its up-to-date state value.
+We need to find a way to access the state data from the `TodoItem` and toggle the `completed` value to `true` or `false` in the `TodoContainer` component.
 
-As expected, we will have the state manage the user’s input (i.e textarea message). So, update the state to include a `message` property like so:
+To do this, we will need to raise an event from the `TodoItem up` a level to `TodosList`, and then into `TodoContainer` component.
 
-```javascript
-const [state, setState] = useState({
-  fname: "",
-  lname: "",
-  message: "",
-})
-```
-Next, add a `textarea` element in the return statement like so:
-```javascript
-return (
-  ...
-    <form>
-      ...
-      <br />
-      <label>
-        Your Message:{" "}
-        <textarea
-          name="message"
-          value={state.message}
-          onChange={handleChange}
-        />
-      </label>
-    </form>
-    <h5>
-      Name: {state.fname} {state.lname}
-    </h5>
-    <p>Message: {state.message}</p>
-  </div>
-);
-```
+In other words, we need to climb a ladder.
+![image](https://ibaslogic.com/static/34ea7bfae797ee1444622abbbfc8e72f/58042/handling-event.png)
+The `TodoItem` component will raise the event while the parent component, `TodoContainer` will handle the event.
 
-## The Select Input Field
+And the way we do that is through `props`.
 
-This is not different from the other input fields. As usual, we can make it a controlled input by first have the state manage the input data. Then add a `value` prop to the element and finally update it through the `onChange` handler function (but in our case, we don’t have to do anything here because we have the logic set already).
+This is kind of tricky but trust me it's very simple. You can either go from the child to parent component or the other way round. I prefer the latter.
 
-So let’s create a dropdown list with options to select car brands.
+So let’s do it.
 
-As expected, add a new property in the state. In my case, I will call it `carBrand`.
+We will first enable communication between these components.
 
-```javascript
-const [state, setState] = useState({
-  ...
-  carBrand: "",
-});
-```
-Then, add the select element just before the closing </form> tag:
-```javascript
-return (
-  ...
-    <form>
-      ...
-      <br /><br />
-      <label>
-        Pick your favorite car brand:
-        <select
-          name="carBrand"
-          value={state.carBrand}
-          onChange={handleChange}
-        >
-          <option value="mercedes">Mercedes</option>
-          <option value="bmw">BMW</option>
-          <option value="maserati">Maserati</option>
-          <option value="infinity">Infinity</option>
-          <option value="audi">Audi</option>
-        </select>
-      </label>
-    </form>
-    <h5>
-      Name: {state.fname} {state.lname}
-    </h5>
-    <h5>My favorite car brand: {state.carBrand}</h5>
-    <p>Message: {state.message}</p>
-  </div>
-);
-```
-
-We are still doing the same thing. The value `prop` on the select element makes it a `controlled` input. Through this prop, we have access to the selected option at every point. If you want to display a default item (for instance, infinity) from the select option, your state should include the item like so:
-
-## The checkbox Input
-Unlike the other input fields, the checkbox uses a `checked` prop (which is a `Boolean` attribute) instead of the value prop. The idea is that a checkbox is either checked or not.
-
-Now, if you take a look at the `handleChange` function, we only make provision for the inputs that have `value` prop through `e.target.value`
-```javascript
-const [state, setState] = useState({
-  ...
-  isChecked: false,
-});
-```
-Here, we assign a Boolean value of `false` so that the input field is unchecked by default.
-
-Next, add input checkbox just before the closing </form> tag.
-```javascript
-return (
-  ...
-    <form>
-      ...
-      <br /><br />
-      <label>
-        <input
-          type="checkbox"
-          name="isChecked"
-          checked={state.isChecked}
-          onChange={handleChange}
-        />
-{" "}
-        Is Checked?
-      </label>
-    </form>
-    <h5>
-      Name: {state.fname} {state.lname}
-    </h5>
-    <h5>My favorite car brand: {state.carBrand}</h5>
-    <p>Message: {state.message}</p>
-    <h5>Is it checked? : {state.isChecked ? "Yes" : "No"}</h5>
-  </div>
-);
-```
-
-Finally, update the handleChange function so you have:
-```javascript
-const handleChange = e => {
-  const value = e.target.type === "checkbox" ? e.target.checked : e.target.value
-  setState({
-    ...state,
-    [e.target.name]: value,
-  })
-}
-```
-
-#### What just happened?
-
-For now, let’s focus on the handleChange function.
-
-In this function, we cannot use the earlier logic to manage the checkbox because it doesn’t have the value but checked attribute. So you’d need to adjust it if you want the same handleChange to manage the checkbox.
-
-Before now, we are only targeting the name and the value of the inputs from the predefined parameter, e (remember, this parameter holds information about the input action or event).
-
-## Radio Inputs
-The radio input types combine the input text and the checkbox type. In other words, they use both the value and the checked prop.
-
-Let’s see how it works.
-
-We will create radio inputs that allow users to select gender.
-
-As expected, let’s add that to the state.
-
-```javascript
-const [state, setState] = useState({
-  ...
-  gender: "",
-});
-```
-Then, add the radio inputs just before the closing </form> tag:
-```javascript
-return (
- ...
-    <form>
-      ...
-      <br /><br />
-      <label>
-        <input
-          type="radio"
-          name="gender"
-          value="male"
-          checked={state.gender === "male"}
-          onChange={handleChange}
-        />
-{" "}
-        Male
-      </label>
-      <label>
-        <input
-          type="radio"
-          name="gender"
-          value="female"
-          checked={state.gender === "female"}
-          onChange={handleChange}
-        />
-{" "}
-        Female
-      </label>
-    </form>
-    <h5>
-      Name: {state.fname} {state.lname}
-    </h5>
-    <h5>My favorite car brand: {state.carBrand}</h5>
-    <p>Message: {state.message}</p>
-    <h5>Is it checked? : {state.isChecked ? "Yes" : "No"}</h5>
-    <h5>Gender Selected : {state.gender}</h5>
-  </div>
-);
-```
-
-#### What’s happening?
-As you know already, once you have the state manage your input, you immediately assign the state property to the `name` prop of the input. You should know from HTML that radio group share the same name. This allows us to select only one button at a time.
-
-Notice that the value prop in these inputs are static unlike that of text inputs where its `value` comes from the state.
-
-And finally, with the `checked` prop, we are saying that if the condition assigned is true, that radio button should be checked.
-
-## Range Input Type
-You can use this type of input to filter a list of items based on numeric values (on a larger application). But here, we will set up an input of this type to display dynamic prices on a range of 0 - $50.
-
-This is going to be a quick one because they all follow the same approach. Start by adding another property in the state. I call it `price`.
-```javascript
-const [state, setState] = useState({
-  ...
-  price: 0,
-});
-```
-Then, add this input field just before the closing </form> tag:
-
-```javascript
-return (
-  ...
-    <form>
-      ...
-      <br /><br />
-      <label>
-        Price (between 0 and 50):
-        <input
-          type="range"
-          name="price"
-          min="0"
-          max="50"
-          value={state.price}
-          onChange={handleChange}
-        />
-      </label>
-    </form>
-    ...
-    <h5>Price : ${state.price}</h5>
-  </div>
-);
-```
-
-Save your file and test your input.
-
-The code should be self-explanatory if you have followed along.
-
-To reiterate,
-
-The first step to handle form inputs in React is to make it a controlled input. And you can do that by having the component state manage the input. Then, you assign the state to the value or checked prop depending on the input type. From there, you have an onChange handler that listens to changes in the input and control its state.
-
-And finally, if you have more than one input fields, you’d want to assign to the name prop of the input its corresponding state name. This allows you to manage your fields with a single handler function.
-
-
-
-
-
-
+Starting from the parent component, `TodoContainer`, add a handler method, `handleChange` just above the `render()` method.
