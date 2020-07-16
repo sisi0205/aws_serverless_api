@@ -36,10 +36,21 @@ function App() {
             onChange={handleChange}
           />
         </label>
+        <br />
+       <label>
+        Your Message:{" "}
+        <textarea
+          name="message"
+          value={state.message}
+          onChange={handleChange}
+        />
+       </label>
+
       </form>
       <h5>
         Name: {state.fname} {state.lname}
       </h5>
+      <p>Message: {state.message}</p>
     </div>
   )
 }

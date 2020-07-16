@@ -207,6 +207,46 @@ Save your file once again and try to write something in both input fields. Youâ€
 
 So to avoid this scenario, we merge them by spreading the entire state object using the three dots before the state and overriding the part of it.
 
+## Adding the TextArea field
+Unlike regular HTML where we define the text in between the `textarea` element. In React, the `textarea` is defined as a self-closing element just like the `input` element.
+
+React is trying to maintain consistency with these inputs. This is good because we can as well use the `value` prop to get its up-to-date state value.
+
+As expected, we will have the state manage the userâ€™s input (i.e textarea message). So, update the state to include a `message` property like so:
+
+```javascript
+const [state, setState] = useState({
+  fname: "",
+  lname: "",
+  message: "",
+})
+```
+Next, add a `textarea` element in the return statement like so:
+```javascript
+return (
+  ...
+    <form>
+      ...
+      <br />
+      <label>
+        Your Message:{" "}
+        <textarea
+          name="message"
+          value={state.message}
+          onChange={handleChange}
+        />
+      </label>
+    </form>
+    <h5>
+      Name: {state.fname} {state.lname}
+    </h5>
+    <p>Message: {state.message}</p>
+  </div>
+);
+```
+
+
+
 
 
 
