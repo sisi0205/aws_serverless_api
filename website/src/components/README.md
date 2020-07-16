@@ -51,7 +51,6 @@ This is how it works:
 The JSX code is passed to Babel (a JavaScript compiler) which will then convert it to plain JavaScript code that all browser can understand. This compiler also changes any JavaScript ES6 features into what the older browsers would recognize. For instance, it converts the const keyword to var.
 # Writing React directly in HTML
 
-
 # Writing the To-dos App
 ## Creating the Component files
 
@@ -175,3 +174,4 @@ At this point, you now have the state data in the todos prop. Thanks to this lin
 ```javascript
 <TodosList todos={this.state.todos} />
 ```
+#### access the data from props
