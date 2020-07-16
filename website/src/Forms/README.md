@@ -166,7 +166,46 @@ function App() {
 export default App
 ```
 
+#### What is happening?
+First, you will notice a significant change in the code. We started by modifying the `useState` Hook to include an additional input data. From there, we have access to the first and last name through state.`fname` and state.`lname` as used in the value prop of their respective input element.
 
+In these `input` elements, we’ve added a `name` prop that holds also their respective state name (i.e `fname` and `lname`). This is very important.
+
+Now, let’s focus on the `handleChange` function. Here, we are using the `setState` function to update the inputs state.
+
+```javascript
+const handleChange = e => {
+  setState({
+    ...state,
+    [e.target.name]: e.target.value,
+  })
+}
+```
+
+In this function, we are simply assigning to the element that is being targeted (through `[e.target.name]`) their corresponding values.
+
+For instance, if the field for the first name changes, the `fname` assigned to the `name` prop replaces `[e.target.name]` like so:
+```javascript
+setState({
+  fname: e.target.value,
+})
+```
+
+Anytime we group related data as we have it in the state variable, the state returned by the `useState` Hook is not merged with that of the update passed to it. In other words, the `useState` Hook doesn’t merge the old and new state. Instead, it overrides the entire state with that of the current
+
+For the meantime, comment-out the `…state` from the function so you have:
+```javascript
+const handleChange = e => {
+  setState({
+    // ...state,
+    [e.target.name]: e.target.value,
+  })
+}
+```
+
+Save your file once again and try to write something in both input fields. You’ll see that they are overriding each other.
+
+So to avoid this scenario, we merge them by spreading the entire state object using the three dots before the state and overriding the part of it.
 
 
 
