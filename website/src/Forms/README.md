@@ -1,4 +1,4 @@
-# Handling Form Inputs in React – A Simple Step-by-Step Guide
+# [Handling Form Inputs in React – A Simple Step-by-Step Guide](https://ibaslogic.com/blog/simple-guide-to-react-form/)
 Ok, Let’s start by displaying a simple text input in the frontend. So go inside the src/App.js file and replace the code with this:
 
 ```javascript
@@ -345,8 +345,74 @@ const handleChange = e => {
 
 #### What just happened?
 
+For now, let’s focus on the handleChange function.
 
+In this function, we cannot use the earlier logic to manage the checkbox because it doesn’t have the value but checked attribute. So you’d need to adjust it if you want the same handleChange to manage the checkbox.
 
+Before now, we are only targeting the name and the value of the inputs from the predefined parameter, e (remember, this parameter holds information about the input action or event).
+
+## Radio Inputs
+The radio input types combine the input text and the checkbox type. In other words, they use both the value and the checked prop.
+
+Let’s see how it works.
+
+We will create radio inputs that allow users to select gender.
+
+As expected, let’s add that to the state.
+
+```javascript
+const [state, setState] = useState({
+  ...
+  gender: "",
+});
+```
+Then, add the radio inputs just before the closing </form> tag:
+```javascript
+return (
+ ...
+    <form>
+      ...
+      <br /><br />
+      <label>
+        <input
+          type="radio"
+          name="gender"
+          value="male"
+          checked={state.gender === "male"}
+          onChange={handleChange}
+        />
+{" "}
+        Male
+      </label>
+      <label>
+        <input
+          type="radio"
+          name="gender"
+          value="female"
+          checked={state.gender === "female"}
+          onChange={handleChange}
+        />
+{" "}
+        Female
+      </label>
+    </form>
+    <h5>
+      Name: {state.fname} {state.lname}
+    </h5>
+    <h5>My favorite car brand: {state.carBrand}</h5>
+    <p>Message: {state.message}</p>
+    <h5>Is it checked? : {state.isChecked ? "Yes" : "No"}</h5>
+    <h5>Gender Selected : {state.gender}</h5>
+  </div>
+);
+```
+
+#### What’s happening?
+As you know already, once you have the state manage your input, you immediately assign the state property to the `name` prop of the input. You should know from HTML that radio group share the same name. This allows us to select only one button at a time.
+
+Notice that the value prop in these inputs are static unlike that of text inputs where its `value` comes from the state.
+
+And finally, with the `checked` prop, we are saying that if the condition assigned is true, that radio button should be checked.
 
 
 
