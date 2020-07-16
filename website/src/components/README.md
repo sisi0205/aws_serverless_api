@@ -208,3 +208,38 @@ To add this unique key prop, we will take advantage of the id we provided in the
 
 #### Add a to do item 
 
+update TodoList.js
+
+```javascript 
+import React from "react"
+import TodoItem from "./TodoItem";
+
+class TodosList extends React.Component {
+  render() {
+    return (
+      <div>
+        {this.props.todos.map(todo => (
+          <TodoItem key={todo.id} todo={todo} />
+        ))}
+      </div>
+    )
+  }
+}
+export default TodosList
+```
+
+update TotoItem.js
+```javascript
+import React from "react"
+
+class TodoItem extends React.Component{
+
+  render() {
+
+    return <li>{this.props.todo.title}</li>
+  }
+}
+export default TodoItem
+```
+
+### Creating the Function Component
