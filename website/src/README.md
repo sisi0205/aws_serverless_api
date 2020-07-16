@@ -1,4 +1,4 @@
-#[React Tutorial: Getting Started with React Form and Handling Event](https://ibaslogic.com/blog/react-form-handling/)
+# [React Tutorial: Getting Started with React Form and Handling Event](https://ibaslogic.com/blog/react-form-handling/)
 
 [github](https://github.com/Ibaslogic/simple-todo-app)
 In the [first part of the React tutorial](https://ibaslogic.com/blog/react-tutorial-for-beginners/) for beginners, we covered some of the basics of React; set up React working environment and started writing our Todos application.
@@ -84,3 +84,20 @@ So let’s do it.
 We will first enable communication between these components.
 
 Starting from the parent component, `TodoContainer`, add a handler method, `handleChange` just above the `render()` method.
+
+```javascript
+handleChange = () => {
+  console.log("clicked");
+};
+```
+
+You can name this method anything you like. Let’s see how we can communicate with this method from the child component.
+
+Start by passing this method to the `TodosList` component through the props.
+
+So update `<TodosList />` so you have:
+```java
+<TodosList todos={this.state.todos} handleChangeProps={this.handleChange} />
+```
+>Note: We are using this.handleChange to reference the handleChange() method because it is part of the class.
+

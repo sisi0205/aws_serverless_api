@@ -8,7 +8,6 @@ class TodosList extends React.Component {
       <div>
         {this.props.todos.map(todo => (
           <TodoItem key={todo.id} todo={todo} />
-//          <li key={todo.id}> {todo.title} </li>
         ))}
       </div>
     )
