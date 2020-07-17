@@ -425,6 +425,43 @@ handleSubmit = e => {
 ```
 > Note how we are preventing the default behaviour of the form submission.
 
+Now, instead of logging the user's input (titles) in the console, we want to pass them from this component to the `TodoContainer` component and update the `state` data.
+
+To do that, we will need to raise and handle the event just like we have been doing.
+
+But this time, we will raise an event from the `InputTodo` component (that accept the user’s input) to the parent component, `TodoContainer` where the state data to be updated live.
+
+If you check the app diagram or open the React Tools to see the component hierarchy, you will see that we are moving up a level from the `InputTodo` to the `TodoContainer` component.
+
+Let’s do it again.
+
+As usual, let's start by enabling communication between those components.
+
+Starting from the parent component, `TodoContainer` , add this class method above the `render()` method:
+```javascript
+addTodoItem = title => {
+  console.log(title);
+};
+```
+Since we are expecting the todos title from the `InputTodo` component, you have to include it as the function argument as seen in the code above.
+
+Next, pass this class method to the InputTodo component by updating the `<InputTodo />` so you have:
+```javascript
+<InputTodo addTodoProps={this.addTodoItem} />
+```
+Now, the `addTodoItem()` method can be accessed through props in the `InputTodo` component.
+
+So update the `handleSubmit` method in the `InputTodo` component so you have:
+```javascript
+handleSubmit = e => {
+  e.preventDefault();
+  this.props.addTodoProps(this.state.title);
+};
+```
+
+
+
+
 
 
 
