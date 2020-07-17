@@ -491,6 +491,35 @@ In the code, we started by defining an object for the new item. In this object, 
 
 With the `setState()` method, we are re-rendering the state. We are adding the new item to the current todos list which can be grabbed using the spread operator `(…)`.
 
+### Generating random ids for the todos list items
+If you try to submit more than one todos item, React will trigger a console warning telling you that the` ids/keys` are meant to be unique. This is happening because we are assigning a single id (an id of 4) to every new todos item received through the input field.
+
+That is not ideal.
+
+The `id` help React to identify which item is added or removed.
+
+To fix this warning, we will install something that will generate random ids that we can use. This is called the UUID (Universal Unique Identifier).
+
+To install it, stop the server with CTRL + C.
+
+From your terminal, run:
+```javascript
+npm i uuid
+```
+Once installed, start the server again with `npm start`.
+
+To use these ids in your app, you need to import the UUID in the `TodoContainer.js` file.
+
+So, add this line below the list of the import statements.
+```javascript
+import { v4 as uuidv4 } from "uuid";
+```
+Then, replace any hardcoded id value with `uuidv4()`.
+
+
+
+
+
 
 
 
