@@ -247,6 +247,59 @@ delTodo = id => {
   });
 };
 ```
+With the `filter()` method, we are saying that for each of the todos data that we are looping through, we want to retain the once whose id is not equal to the id passed in.
+>Please note the spread operator (…) in the code. It allows us to grab the current todos item(s) at every point. As this is necessary for the code to work.
+
+### Adding a text input field and a submit button
+In React, all the different types of input fields follow the same approach. We’ve seen how the checkbox type of input field works. Using the same pattern, we will add the text input field that will allow users to add todos items to the list.
+
+Let’s start by adding the following code inside the empty `InputTodo.js` file:
+```javascript
+import React, { Component } from "react"
+
+class InputTodo extends Component {
+  render() {
+    return (
+      <form>
+        <input type="text" placeholder="Add Todo..." />
+        <input type="submit" value="Submit" />
+      </form>
+    )
+  }
+}
+export default InputTodo
+```
+
+Since we will be getting data through the user’s interaction (i.e through the input field), this component will, therefore, hold state. For that reason, it will be a class-based component.
+Also, notice how we are extending the `Component` class in the React library.
+
+Unlike the previous class components where we used `React.Component`. Here, we are using `Component` after importing it from the `react` module like this:
+To use this component in our application, we will import it inside the `TodoContainer.js` file using this code:
+```javascript
+import InputTodo from "./InputTodo"
+```
+
+Then, add `<InputTodo />` inside the `render()` method just below the `<Header />`.
+```javascript
+render() {
+  return (
+    <div>
+      <Header />
+      <InputTodo />
+      <TodosList
+        todos={this.state.todos}
+        handleChangeProps={this.handleChange}
+        deleteTodoProps={this.delTodo}
+      />
+    </div>
+  );
+}
+```
+
+As we did for the checkbox, we have to make the form input field a controlled field.
+
+The first step is to have a state manage the user's input. So, add this code just above the `render()` method in the `InputTodo` component:
+
 
 
 
