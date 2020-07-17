@@ -299,6 +299,47 @@ render() {
 As we did for the checkbox, we have to make the form input field a controlled field.
 
 The first step is to have a state manage the user's input. So, add this code just above the `render()` method in the `InputTodo` component:
+```javascript
+state = {
+  title: ""
+};
+```
+We can now take this data and assign it to a `value` prop in the text input tag.
+
+So update it so you have:
+```javascript
+<input type="text" placeholder="Add todo..." value={this.state.title} />
+```
+>Note: We use checked prop for the input checkbox and value prop for the text input.
+
+Now, the text input field is being controlled by the component state and not the DOM. Hence, you will not be able to write anything in the field because it is assigned a value equal to the current value of the state.
+
+The value is empty as declared in the `state` object.
+
+To change the state, we need to update it through the `setState()` method.
+
+Again, just like the `checked` prop, the `value` prop also exhibits a warning in the console. React is reminding us that we need to add an `onChange` handler that will keep track of any changes in the field.
+
+So let’s update the text input so it includes this:
+```javascript
+onChange={this.onChange}
+```
+Then add this code above the `render()` method:
+```javascript
+onChange = e => {
+  console.log("hello");
+};
+```
+
+Don’t forget that we are using `this.onChange` because the method, `onChange()` is part of the class.
+
+Save your file.
+
+If you try to write in the input field, you’ll see "hello" text being displayed in response to every keystroke inside the console.
+
+Next, we need to handle the event and update the state. Let’s update the onChange method to this:
+
+
 
 
 
