@@ -9,10 +9,14 @@ class InputTodo extends Component {
     [e.target.name]: e.target.value
   });
   };
+  handleSubmit = e => {
+  e.preventDefault();
+  console.log(this.state.title);
+  };
 
   render() {
     return (
-      <form>
+      <form onSubmit={this.handleSubmit}>
         <input
         type="text"
         placeholder="Add Todo..."

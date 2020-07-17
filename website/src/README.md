@@ -405,6 +405,27 @@ With these changes, you can add as many text input fields as you want. Now,inste
 [e.target.name]: e.target.value
 ```
 
+### Updating the Todos list
+At the moment, the page will reload if you try to submit a todos item and update the state data. We need to handle that.
+
+To submit todos items, we will make use of the `onSubmit` event handler on the `form` element.
+
+Let's quickly do that.
+
+Update the `<form>` tag in the `InputTodo` component to include the `onSubmit` handler.
+```javascript
+<form onSubmit={this.handleSubmit}>
+```
+Then, add the following code above the `render()` method and save the file:
+```javascript
+handleSubmit = e => {
+  e.preventDefault();
+  console.log(this.state.title);
+};
+```
+> Note how we are preventing the default behaviour of the form submission.
+
+
 
 
 
