@@ -470,6 +470,26 @@ handleSubmit = e => {
   });
 };
 ```
+Finally, we can update the state.
+
+Back to the `TodoContainer` component, update the `addTodoItem()` method so you have:
+```javascript
+addTodoItem = title => {
+  const newTodo = {
+    id: 4,
+    title: title,
+    completed: false
+  };
+  this.setState({
+    todos: [...this.state.todos, newTodo]
+  });
+};
+```
+#### What did we do?
+
+In the code, we started by defining an object for the new item. In this object, we are passing a set of key-value pair. Here, we have the `title` from the user’s input, the `completed` key assigned a `false` value so that the checkbox is not selected by default. Then, for the meantime, we are working with hardcoded `id`.
+
+With the `setState()` method, we are re-rendering the state. We are adding the new item to the current todos list which can be grabbed using the spread operator `(…)`.
 
 
 
