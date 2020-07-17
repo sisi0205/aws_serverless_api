@@ -338,6 +338,26 @@ Save your file.
 If you try to write in the input field, you’ll see "hello" text being displayed in response to every keystroke inside the console.
 
 Next, we need to handle the event and update the state. Let’s update the onChange method to this:
+```javascript
+onChange = e => {
+  this.setState({
+    title: e.target.value
+  });
+};
+```
+
+#### What’s happening?
+
+If you type anything inside the input field, the `onChange` event handler will trigger. This will then call the `onChange()` class method that will re-render the state using the `setState()` method.
+
+In the `setState()` method, we are passing the current value of the state (i.e the input text) to the title using `e.target.value`.
+
+And if you recall from vanilla JavaScript DOM API, the predefined parameter, `e`, hold some important information about the event.
+
+From there, you can target the specific input field and grab the updated value.
+
+### Handling React form that has more than one text input field
+
 
 
 
