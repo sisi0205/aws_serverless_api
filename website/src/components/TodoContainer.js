@@ -6,12 +6,11 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 
-
 class TodoContainer extends React.Component {
   state = {
- todos: [
- ]
-};
+  todos: [
+  ]
+ };
   handleChange = id => {
   this.setState({
     todos: this.state.todos.map(todo => {
@@ -43,8 +42,26 @@ class TodoContainer extends React.Component {
     });
   };
   componentDidMount() {
-  axios.get("https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/table")
-    .then(response => console.log(response.data));
+  axios.get("https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/table?_limit=10",
+  {
+      params: {
+        _limit: 10
+      }
+    }
+
+  ).then(response => {
+   console.log(response.data);
+   this.setState({ todos: response.data.map(
+           item => {
+             item['id'] = uuidv4();
+             item['completed'] = false;
+             item['title'] = item['Key']
+             return item;
+           }
+        )
+     }
+   );
+   })
   }
 
   render() {

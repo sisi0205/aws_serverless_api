@@ -76,7 +76,63 @@ componentDidMount() {
     .then(response => console.log(response.data));
 }
 ```
+####  limit the number of todos
 
+This can be done either by appending the query string parameter `\_limit=10` to the URL or by adding them as a second argument in the `get()` method.
+
+I will show you both options.
+
+* First, update the endpoint URL so you now have this:
+```javascript
+"https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/table?_limit=10"
+```
+* The second option is to add a config object as the second parameter in the get() method like so:
+```javascript
+componentDidMount() {
+  axios.get("https://jsonplaceholder.typicode.com/todos", {
+      params: {
+        _limit: 10
+      }
+    })
+    .then(response => console.log(response.data));
+}
+```
+Here we are using the `params` option to set a query string parameter in the config object.
+
+To be on the same page, let’s go with the first method.
+
+Before we go ahead and display the todos items in our app, let’s explain what we did.
+
+First, I guess you remember why we are using the `componentDidMount()` method. Again, it is a good place to make an HTTP request.
+
+Here, we are using HTTP `GET` method to retrieve data from an endpoint.
+
+By using Axios, we make use of `axios.get()` method. This accepts the URL of the endpoint and an optional config object as the second parameter.
+
+This method, `axios.get()` returns a promise which must be resolved to access the data. To do that, we use the `.then()` method which will receive a response that contains the data we need.
+
+Now, we can update the state with these data.
+
+Update the code so you have:
+```javascript
+then(response => {
+   console.log(response.data);
+   this.setState({ todos: response.data.map(
+           item => {
+             item['id'] = uuidv4();
+             item['completed'] = false;
+             item['title'] = item['Key']
+             return item;
+           }
+        )
+     }
+   );
+   })
+```
+
+Thanks to the `setState()` call. React knows that the `todos` have changed from the empty data we assigned in the state to the data we received from the JSONPlaceholder API. It then calls the `render()` method once again to display the new data.
+
+As you can see, some are marked as completed because they are assigned a true value. You can visit the endpoint URL in your browser and see what is assigned to each of the completed keys.
 
 
 
