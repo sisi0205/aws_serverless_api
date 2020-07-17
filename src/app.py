@@ -30,13 +30,14 @@ def index():
 @app.route('/table', methods= ['GET'])
 def post_file():
     table_results = table.scan()['Items']
+    # print(request)
     return json_response(table_results)
-
 
 
 @app.route('/put_list',methods= ['POST'])
 def put_list_file():
     table.put_item(Item=request.form.to_dict())
+    print(" here is the post method")
     return json_response({"message": "entry created"})
 
 def json_response(data, response_code = 200):

@@ -33,7 +33,7 @@ class TodoContainer extends React.Component {
 
   addTodoItem = title => {
    axios
-    .post("https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/put_list", {
+    .post("https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/table", {
       Key: title,
       completed: false,
       title: title,
