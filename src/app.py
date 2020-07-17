@@ -30,19 +30,14 @@ def index():
 @app.route('/table', methods= ['GET'])
 def post_file():
     table_results = table.scan()['Items']
-    # print(json.dumps(table_results))
     return json_response(table_results)
 
 
 
-@app.route('/put_list',methods= ['GET','POST'])
+@app.route('/put_list',methods= ['POST'])
 def put_list_file():
-    if request.method == 'GET':
-        file = table.scan()['Items']
-        return json_response(file)
-    else:
-        table.put_item(Item=request.form.to_dict())
-        return json_response({"message": "student entry created"})
+    table.put_item(Item=request.form.to_dict())
+    return json_response({"message": "entry created"})
 
 def json_response(data, response_code = 200):
     return (json.dumps(data),

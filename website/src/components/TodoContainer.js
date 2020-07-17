@@ -32,14 +32,19 @@ class TodoContainer extends React.Component {
   };
 
   addTodoItem = title => {
-   const newTodo = {
-    id: uuidv4(),
-    title: title,
-    completed: false
-   };
-   this.setState({
-    todos: [...this.state.todos, newTodo]
-    });
+   axios
+    .post("https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/put_list", {
+      Key: title,
+      completed: false,
+      title: title,
+      id: uuidv4()
+    })
+    .then(response =>
+      this.setState({
+        todos: [...this.state.todos, response.data],
+      })
+    )
+
   };
   componentDidMount() {
   axios.get("https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/table?_limit=10",

@@ -134,8 +134,35 @@ Thanks to the `setState()` call. React knows that the `todos` have changed from 
 
 As you can see, some are marked as completed because they are assigned a true value. You can visit the endpoint URL in your browser and see what is assigned to each of the completed keys.
 
+###
 
+## Making a POST request
 
+Now if you add more entries to the todos list, you will only be updating the UI and not the backend. What we want is to make a `POST` request to the API server, get a response and update the UI.
+
+You would want to make a POST request whenever you are adding something.
+
+Now, let’s modify the `addTodoItem` method in the `TodoContainer` component so you have:
+
+```
+addTodoItem = title => {
+  axios
+    .post("https://jsonplaceholder.typicode.com/todos", {
+      title: title,
+      completed: false,
+    })
+    .then(response =>
+      this.setState({
+        todos: [...this.state.todos, response.data],
+      })
+    )
+}
+```
+When you make a POST request to the JSONplaceholder server, an id is generated for the returned data. So, you don’t need the UUID anymore. You can delete it.
+
+However, this id is static for every submission. This is because we are not actually updating their database.
+
+As seen below, it returned an id of 201 for every submission. Remember, the endpoint has a total of 200 todos items.
 
 
 
