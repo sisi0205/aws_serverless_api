@@ -458,7 +458,18 @@ handleSubmit = e => {
   this.props.addTodoProps(this.state.title);
 };
 ```
+Before we move on, let’s clear the input field once we have submitted a todos item for subsequent entry.
 
+Simply update the `handleSubmit` method so you have:
+```javascript
+handleSubmit = e => {
+  e.preventDefault();
+  this.props.addTodoProps(this.state.title);
+  this.setState({
+    title: ""
+  });
+};
+```
 
 
 
