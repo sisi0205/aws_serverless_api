@@ -4,6 +4,7 @@ import json
 import boto3
 import os
 app = FlaskLambda(__name__)
+# app = Flask(__name__)
 ddb = boto3.resource('dynamodb')
 table = ddb.Table('ghcn-api')
 # table = ddb.Table(os.environ['MyTableName'])
@@ -14,11 +15,16 @@ def index():
     data = {
         "message": "Hello world"
     }
-
     return (
         json.dumps(data),
         200,
-        {'Content-Type':"application/json"}
+       {
+            'Access-Control-Allow-Headers': 'Content-Type',
+            'Access-Control-Allow-Origin': '*',
+            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+        },
+
+
     )
 
 @app.route('/table', methods= ['GET'])
@@ -26,6 +32,7 @@ def post_file():
     table_results = table.scan()['Items']
     # print(json.dumps(table_results))
     return json_response(table_results)
+
 
 
 @app.route('/put_list',methods= ['GET','POST'])
@@ -38,4 +45,11 @@ def put_list_file():
         return json_response({"message": "student entry created"})
 
 def json_response(data, response_code = 200):
-    return json.dumps(data), response_code,{"headers": { "Access-Control-Allow-Origin": "*" }}
+    return (json.dumps(data),
+            200,
+            {
+                'Access-Control-Allow-Headers': 'Content-Type',
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
+            }
+            )

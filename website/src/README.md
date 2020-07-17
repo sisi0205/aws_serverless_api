@@ -30,6 +30,52 @@ npm i axios
 
 ## The Lifecycle methods
 
+Every React component you create always goes through a series of events or phases from its birth to death. For instance, if you create a component to render something on the screen, it will go through a couple of phases to display the content.
+
+You can think of this component going through a cycle of birth, growth and finally death.
+
+In React, these phases are mainly three:
+
+* **Mounting** – As the name implies, this is the phase when React component mounts (created and inserted) the DOM. In this phase, the component is birthed.
+
+* **Updating** – Once the component is mounted, next is to get updated if necessary. Remember that component gets updated when there is/are state or prop changes, hence trigger re-rendering. All of that happens in this phase.
+
+* **Unmounting**  – This phase ends the component lifecycle because, in it, the component is removed from the DOM.
+
+In each of these phases, React provides lifecycle methods that we can use to monitor and manipulate what happens within the component.
+
+Though, we have been using one of these lifecycle methods – the  `render()` method.
+
+This method is the only required lifecycle method within a React class component. It’s responsible for rendering React elements in the DOM and it is called during the mounting and updating phase.
+
+React has several optional lifecycle methods, of which some are deprecated. But the common once include –
+
+**componentDidMount()** – This method is called after the component is rendered.
+
+**componentDidUpdate()** – This is called immediately after updating occurs.
+
+**componentWillUnmount()** – This is called just before a component is unmounted or destroyed.
+
+
+### The componentDidMount() method
+As a beginner, you will most likely be working with the `componentDidMount()` in addition to the `render()` lifecycle method. This is because, most of the time, you will be making an HTTP request. And one of the common uses of this lifecycle method is to get data from somewhere.
+
+Remember, we want to load todos data from a remote endpoint. So, the `componentDidMount()` method is a good place to make this type of HTTP request. This ensures that your data is fetched as soon as possible.
+
+So let's apply this method. Start your development server with npm start
+
+## Making a GET request
+As expected, we use the `Get` HTTP method to fetch data. So, let’s start by importing the Axios library in the `TodoContainer.js` file:
+```javascript
+import axios from "axios";
+```
+Then add the following code above the `render()` method in the `TodoContainer` component:
+```javascript
+componentDidMount() {
+  axios.get("https://jsonplaceholder.typicode.com/todos")
+    .then(response => console.log(response.data));
+}
+```
 
 
 

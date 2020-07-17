@@ -54,6 +54,11 @@ Resources:
           Properties:
             Path: /table
             Method: get
+        GetandPost:
+          Type: Api
+          Properties:
+            Path: /put_list
+            Method: get
 
 
   S3Bucket:
