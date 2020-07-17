@@ -357,6 +357,54 @@ And if you recall from vanilla JavaScript DOM API, the predefined parameter, `e`
 From there, you can target the specific input field and grab the updated value.
 
 ### Handling React form that has more than one text input field
+For instance, if your form requires fields for the name, email and password. First, you would want all those fields included in the `state` and assigned an empty string.
+
+After that, you’ll have to modify the `onChange` method to this:
+```
+onChange = e => {
+  this.setState({
+    [e.target.name]: e.target.value
+  });
+};
+```
+Then, you add a `name` attribute to each of the input tags and assigned a value with the same name you declared in the `state`. For instance, in our case, we will have the `name="title"` included in the text input tag.
+
+If you apply these changes in your code, your `InputTodo` component should look like this:
+```javascript
+import React, { Component } from "react"
+
+class InputTodo extends Component {
+  state = {
+    title: "",
+  }
+  onChange = e => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    })
+  }
+  render() {
+    return (
+      <form>
+        <input
+          type="text"
+          placeholder="Add todo..."
+          value={this.state.title}
+          name="title"
+          onChange={this.onChange}
+        />
+        <input type="submit" value="Submit" />
+      </form>
+    )
+  }
+}
+export default InputTodo
+```
+
+With these changes, you can add as many text input fields as you want. Now,instead of having multiple methods to handle different input fields, we modified the `setState()` method to this:
+```javascript
+[e.target.name]: e.target.value
+```
+
 
 
 
