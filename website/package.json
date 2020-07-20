@@ -18,7 +18,7 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "aws s3 sync build/ s3://ghcn-api-s3bucket-8wp90fqi05ac"
+    "deploy": "aws s3 sync build/ s3://ghcn-api-website-host"
   },
   "eslintConfig": {
     "extends": "react-app"

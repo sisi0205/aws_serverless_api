@@ -9,8 +9,14 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
+    CodeUri: src/
     Timeout: 3
 
+Parameters:
+  NotificationBucket:
+    Type: String
+    Description: S3 bucket that's used for the Lambda event notification
+    Default: ghcn-api-data-archive
 
 Resources:
   HelloAPI:
@@ -82,11 +88,10 @@ Resources:
                 type: aws_proxy
 
 
-
   getDataFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: src/
+#      CodeUri: src/
       Handler: app.app
       Runtime: python3.6
       Policies:
@@ -115,13 +120,86 @@ Resources:
             Path: /put_list
             Method: any
 
+  LambdaInvokePermission:
+    Type: 'AWS::Lambda::Permission'
+    Properties:
+      FunctionName: !GetAtt getDataFunction.Arn
+      Action: 'lambda:InvokeFunction'
+      Principal: s3.amazonaws.com
+      SourceAccount: !Ref 'AWS::AccountId'
+      SourceArn: !Sub 'arn:aws:s3:::${NotificationBucket}'
+
+  LambdaIAMRole:
+    Type: 'AWS::IAM::Role'
+    Properties:
+      AssumeRolePolicyDocument:
+        Version: 2012-10-17
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service:
+                - lambda.amazonaws.com
+            Action:
+              - 'sts:AssumeRole'
+      Path: /
+      Policies:
+        - PolicyName: root
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 's3:GetBucketNotification'
+                  - 's3:PutBucketNotification'
+                Resource: !Sub 'arn:aws:s3:::${NotificationBucket}'
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+
+  CustomResourceLambdaFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Handler: notification.lambda_handler
+      Role: !GetAtt LambdaIAMRole.Arn
+      Runtime: python3.6
+      Timeout: 50
+#      CodeUri: src/notification
+
+
+
+
+
+
+
+#  LambdaTrigger:
+#    Type: AWS::Lambda::Permission
+#    DependsOn: LambdaInvokePermission
+#    Properties:
+#      ServiceToken: !GetAtt CustomResourceLambdaFunction.Arn
+#      LambdaArn: !GetAtt S3NotificationLambdaFunction.Arn
+#      Bucket: !Ref BucketName
 
 
 
   S3Bucket:
     Type: AWS::S3::Bucket
+    DeletionPolicy: Retain
     Properties:
+      BucketName: ghcn-api-website-host
       AccessControl: PublicRead
+      CorsConfiguration:
+        CorsRules:
+          - AllowedOrigins:
+              - '*'
+            AllowedHeaders:
+              - '*'
+            AllowedMethods:
+              - PUT
+              - POST
+            MaxAge: 3000
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html

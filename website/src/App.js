@@ -12,11 +12,19 @@ function App() {
         </p>
         <a
           className="App-link"
-          href="https://reactjs.org"
+          href="https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/dev"
           target="_blank"
-          rel="noopener noreferrer"
+          rel=""
         >
-          Learn React
+          Hello world
+        </a>
+         <a
+          className="App-link"
+          href="https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/dev/table"
+          target="_blank"
+          rel=""
+         >
+          Table
         </a>
       </header>
     </div>

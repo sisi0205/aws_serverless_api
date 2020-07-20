@@ -9,8 +9,33 @@ app = FlaskLambda(__name__)
 CORS(app)
 # app = Flask(__name__)
 ddb = boto3.resource('dynamodb')
+s3 = boto3.resource('s3')
+
 table = ddb.Table('ghcn-api')
-# table = ddb.Table(os.environ['MyTableName'])
+# bucket_cors = s3.BucketCors('ghcn-api-s3bucket-8wp90fqi05ac')
+# response = bucket_cors.put(
+#     CORSConfiguration={
+#         'CORSRules': [
+#             {
+#                 'AllowedHeaders': [
+#                     'x-amz-*','X-Api-Key','Content-Type','Authorization',
+#                 ],
+#                 'AllowedMethods': [
+#                     'GET','POST','PUT','DELETE','OPTIONS',
+#                 ],
+#                 'AllowedOrigins': [
+#                     '*',
+#                 ],
+#                 'ExposeHeaders': [
+#                     'x-amz-server-side-encryption','x-amz-request-id','x-amz-id-2'
+#                 ],
+#                 'MaxAgeSeconds': 123
+#             },
+#         ]
+#     },
+#
+# )
+
 
 @app.route('/')
 def index():
