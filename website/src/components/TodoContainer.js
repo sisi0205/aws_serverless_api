@@ -11,6 +11,7 @@ class TodoContainer extends React.Component {
   todos: [
   ]
  };
+
   handleChange = id => {
   this.setState({
     todos: this.state.todos.map(todo => {
@@ -33,7 +34,7 @@ class TodoContainer extends React.Component {
 
   addTodoItem = title => {
    axios
-    .post("https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/table", {
+    .post("https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/dev/table", {
       Key: title,
       completed: false,
       title: title,
@@ -44,10 +45,17 @@ class TodoContainer extends React.Component {
         todos: [...this.state.todos, response.data],
       })
     )
+    .catch(
+     (error) => {
+      console.log('error ' + error);
+     }
+    )
+
 
   };
+
   componentDidMount() {
-  axios.get("https://e6tsicu0ga.execute-api.us-east-2.amazonaws.com/Prod/table?_limit=10",
+  axios.get("https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/Stage/table?_limit=10",
   {
       params: {
         _limit: 10
@@ -68,6 +76,7 @@ class TodoContainer extends React.Component {
    );
    })
   }
+
 
   render() {
      return (

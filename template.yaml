@@ -7,13 +7,80 @@ Description: >
 
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
-
 Globals:
   Function:
     Timeout: 3
 
 
 Resources:
+  HelloAPI:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: dev
+      DefinitionBody:
+        swagger: 2.0
+        info:
+          title:!Ref: AWS::StackName
+        paths:
+          /:
+            x-amazon-apigateway-any-method:
+              security:
+                - sigv4: []
+              produces:
+                - application/json
+              responses:
+                '200':
+                  description: 200 response
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: 200
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getDataFunction.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+
+          /put_list:
+            get:
+              x-amazon-apigateway-integration:
+                httpMethod: POST
+                type: aws_proxy
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getDataFunction.Arn}/invocations
+              responses: {}
+
+          /table:
+            x-amazon-apigateway-any-method:
+              security:
+                - sigv4: []
+              produces:
+                - application/json
+              responses:
+                '200':
+                  description: 200 response
+                  schema:
+                    $ref: "#/definitions/Empty"
+                  headers:
+                    Access-Control-Allow-Origin:
+                      type: string
+                    Access-Control-Allow-Methods:
+                      type: string
+                    Access-Control-Allow-Headers:
+                      type: string
+
+              x-amazon-apigateway-integration:
+                responses:
+                  default:
+                    statusCode: 200
+                    ResponseParameters:
+                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
+                      method.response.header.Access-Control-Allow-Methods: "'GET,POST,PUT,DELETE,OPTIONS'"
+                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                uri:
+                  !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getDataFunction.Arn}/invocations
+                httpMethod: POST
+                type: aws_proxy
+
 
 
   getDataFunction:
@@ -31,18 +98,24 @@ Resources:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
           Properties:
             Path: /
-            Method: get
+            Method: any
+            RestApiId:
+              Ref: HelloAPI
         ListFiles:
           Type: Api
           Properties:
             Path: /table
-            Method: get
+            Method: any
+            RestApiId:
+              Ref: HelloAPI
 
         GetFileName:
           Type: Api
           Properties:
             Path: /put_list
-            Method: post
+            Method: any
+
+
 
 
   S3Bucket:

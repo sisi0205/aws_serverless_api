@@ -1,9 +1,12 @@
 from flask_lambda import FlaskLambda
 from flask import request, render_template
+from flask_cors import CORS
 import json
 import boto3
 import os
+
 app = FlaskLambda(__name__)
+CORS(app)
 # app = Flask(__name__)
 ddb = boto3.resource('dynamodb')
 table = ddb.Table('ghcn-api')
@@ -27,7 +30,7 @@ def index():
 
     )
 
-@app.route('/table', methods= ['GET'])
+@app.route('/table', methods= ['GET','POST'])
 def post_file():
     table_results = table.scan()['Items']
     # print(request)
