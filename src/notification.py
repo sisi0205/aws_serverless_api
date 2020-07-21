@@ -1,97 +1,58 @@
-from __future__ import print_function
 import json
 import boto3
-from botocore.vendored import requests
-import cfnresponse
+import urllib
+
+dynamodb = boto3.resource('dynamodb')
+s3 = boto3.client('s3')
+ses = boto3.client("ses")
+table_name = 'ghcn-api'
 
 
+def update_attributes(table, items, key):
+    expression, values = format_items(items)
+    response = table.update_item(
+        Key={
+            'Key': key
+        },
+        UpdateExpression=expression,
+        ExpressionAttributeValues=values,
+        ReturnValues="UPDATED_NEW"
+    )
+    return response
 
-SUCCESS = "SUCCESS"
-FAILED = "FAILED"
-print('Loading function')
-s3 = boto3.resource('s3')
+
+## format items
+def format_items(items):
+    expression = 'set '
+    values = {}
+    cnt = 0
+    for key, value in items.items():
+        tp = ':val' + str(cnt)
+        cnt = cnt + 1
+        expression = expression + key + '=' + tp
+        values[tp] = value
+    return (expression, values)
 
 
 def lambda_handler(event, context):
-    print("Received event: " + json.dumps(event, indent=2))
-    responseData = {}
+    # TODO implement
+    ## get the bucket name
+    bucket = event['Records'][0]['s3']['bucket']['name']
+    ## get the file name
+    key = urllib.parse.unquote_plus(event['Records'][0]['s3']['object']['key'], encoding='utf-8')
+
+    ### get metadata
     try:
-        if event['RequestType'] == 'Delete':
-            print("Request Type:", event['RequestType'])
-            Bucket = event['ResourceProperties']['Bucket']
-            delete_notification(Bucket)
-            print("Sending response to custom resource after Delete")
-        elif event['RequestType'] == 'Create' or event['RequestType'] == 'Update':
-            print("Request Type:", event['RequestType'])
-            LambdaArn = event['ResourceProperties']['LambdaArn']
-            Bucket = event['ResourceProperties']['Bucket']
-            add_notification(LambdaArn, Bucket)
-            responseData = {'Bucket': Bucket}
-            print("Sending response to custom resource")
-        responseStatus = 'SUCCESS'
+        items = s3.head_object(Bucket=bucket, Key=key)
+        print(items)
+
     except Exception as e:
-        print('Failed to process:', e)
-        responseStatus = 'FAILURE'
-        responseData = {'Failure': 'Something bad happened.'}
-    cfnresponse.send(event, context, responseStatus, responseData)
+        print(e)
+        raise e
 
+    ## email notification
+    subject = str(event['Records'][0]["eventName"]) + "Event from " + bucket
 
-
-def add_notification(LambdaArn, Bucket):
-    bucket_notification = s3.BucketNotification(Bucket)
-    response = bucket_notification.put(
-        NotificationConfiguration={
-            'LambdaFunctionConfigurations': [
-                {
-                    'LambdaFunctionArn': LambdaArn,
-                    'Events': [
-                        's3:ObjectCreated:*'
-                    ]
-                }
-            ]
-        }
-    )
-    print("Put request completed....")
-
-
-def delete_notification(Bucket):
-    bucket_notification = s3.BucketNotification(Bucket)
-    response = bucket_notification.put(
-        NotificationConfiguration={}
-    )
-    print("Delete request completed....")
-
-def send(event, context, responseStatus, responseData, physicalResourceId=None, noEcho=False):
-    responseUrl = event['ResponseURL']
-
-    print(responseUrl)
-
-    responseBody = {}
-    responseBody['Status'] = responseStatus
-    responseBody['Reason'] = 'See the details in CloudWatch Log Stream: ' + context.log_stream_name
-    responseBody['PhysicalResourceId'] = physicalResourceId or context.log_stream_name
-    responseBody['StackId'] = event['StackId']
-    responseBody['RequestId'] = event['RequestId']
-    responseBody['LogicalResourceId'] = event['LogicalResourceId']
-    responseBody['NoEcho'] = noEcho
-    responseBody['Data'] = responseData
-
-    json_responseBody = json.dumps(responseBody)
-
-    print("Response body:\n" + json_responseBody)
-
-    headers = {
-        'content-type' : '',
-        'content-length' : str(len(json_responseBody))
-    }
-
-    try:
-        response = requests.put(responseUrl,
-                                data=json_responseBody,
-                                headers=headers)
-        print("Status code: " + response.reason)
-    except Exception as e:
-        print("send(..) failed executing requests.put(..): " + str(e))
-
-
-
+    ### update table
+    table = dynamodb.Table(table_name)
+    update_attributes(table_name, items, key)

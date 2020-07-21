@@ -17,6 +17,10 @@ Parameters:
     Type: String
     Description: S3 bucket that's used for the Lambda event notification
     Default: ghcn-api-data-archive
+  TableName:
+    Type: String
+    Description: dynameDB table name
+    Default: ghcn-api
 
 Resources:
   HelloAPI:
@@ -88,6 +92,8 @@ Resources:
                 type: aws_proxy
 
 
+
+
   getDataFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
@@ -120,6 +126,16 @@ Resources:
             Path: /put_list
             Method: any
 
+
+## s3 notification
+  S3NotificationFunction:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      Runtime: python3.6
+      Role: !GetAtt LambdaRole.Arn
+      Handler: notification.lambda_handler
+
+
   DataArchiveS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
@@ -127,19 +143,21 @@ Resources:
       NotificationConfiguration:
         LambdaConfigurations:
           - Event: 's3:ObjectCreated:*'
-            Function: !GetAtt getDataFunction.Arn
+            Function: !GetAtt S3NotificationFunction.Arn
+
 
   S3InvokeLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref getDataFunction
+      FunctionName: !Ref S3NotificationFunction
       Principal: s3.amazonaws.com
       SourceArn: !Sub arn:aws:s3:::${NotificationBucket}
 
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
+      Description: 'S3 notification and DB access'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -150,6 +168,47 @@ Resources:
               - sts:AssumeRole
       Path: '/'
       Policies:
+        - PolicyName: Cloudwatch
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+        - PolicyName: SESFullAcess
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ses:*"
+                Resource: "*"
+        - PolicyName: dynamoDB_access
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:List*
+                  - dynamodb:DescribeReservedCapacity*
+                  - dynamodb:DescribeLimits
+                  - dynamodb:DescribeTimeToLive
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchGet*
+                  - dynamodb:DescribeStream
+                  - dynamodb:DescribeTable
+                  - dynamodb:Get*
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:BatchWrite*
+                  - dynamodb:CreateTable
+                  - dynamodb:Delete*
+                  - dynamodb:Update*
+                  - dynamodb:PutItem
+                Resource:
+                  - !Sub arn:aws:dynamodb:*:*:table/${TableName}
         - PolicyName: s3
           PolicyDocument:
             Statement:
@@ -161,6 +220,8 @@ Resources:
                   - !Sub arn:aws:s3:::${NotificationBucket}/*
 
 
+
+# website host
   S3Bucket:
     Type: AWS::S3::Bucket
     DeletionPolicy: Retain
@@ -181,6 +242,7 @@ Resources:
         IndexDocument: index.html
         ErrorDocument: error.html
 
+
   BucketPolicy:
     Type: AWS::S3::BucketPolicy
     Properties:
@@ -198,11 +260,11 @@ Resources:
       Bucket: !Ref S3Bucket
 
 
-
+# db table
   ghcnTable:
     Type: AWS::DynamoDB::Table
     Properties:
-      TableName: ghcn-api
+      TableName: !Ref TableName
       AttributeDefinitions:
         - AttributeName: Key
           AttributeType: S
