@@ -36,6 +36,7 @@ DataArchiveS3Bucket:
   LambdaRole:
     Type: AWS::IAM::Role
     Properties:
+      Description: 'S3 notification and DB access'
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
@@ -46,6 +47,47 @@ DataArchiveS3Bucket:
               - sts:AssumeRole
       Path: '/'
       Policies:
+        - PolicyName: Cloudwatch
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'logs:CreateLogGroup'
+                  - 'logs:CreateLogStream'
+                  - 'logs:PutLogEvents'
+                Resource: 'arn:aws:logs:*:*:*'
+        - PolicyName: SESFullAcess
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - "ses:*"
+                Resource: "*"
+        - PolicyName: dynamoDB_access
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - dynamodb:List*
+                  - dynamodb:DescribeReservedCapacity*
+                  - dynamodb:DescribeLimits
+                  - dynamodb:DescribeTimeToLive
+                Resource: "*"
+              - Effect: Allow
+                Action:
+                  - dynamodb:BatchGet*
+                  - dynamodb:DescribeStream
+                  - dynamodb:DescribeTable
+                  - dynamodb:Get*
+                  - dynamodb:Query
+                  - dynamodb:Scan
+                  - dynamodb:BatchWrite*
+                  - dynamodb:CreateTable
+                  - dynamodb:Delete*
+                  - dynamodb:Update*
+                  - dynamodb:PutItem
+                Resource:
+                  - !Sub arn:aws:dynamodb:*:*:table/${TableName}
         - PolicyName: s3
           PolicyDocument:
             Statement:
