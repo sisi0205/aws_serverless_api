@@ -11,39 +11,27 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Example Stack
 
 Parameters:
-  BucketName:
+  NotificationBucket:
     Type: String
-    Default: unique-bucket-name
+    Description: S3 bucket that's used for the Lambda event notification
+    Default: ghcn-api-data-archive
 
-Resources:
-  Bucket:
+DataArchiveS3Bucket:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: !Ref BucketName
-      ...
+      BucketName: !Ref NotificationBucket
       NotificationConfiguration:
         LambdaConfigurations:
           - Event: 's3:ObjectCreated:*'
-            Filter:
-              S3Key:
-                Rules:
-                  - Name: prefix
-                    Value: test/
-                  - Name: suffix
-                    Value: .txt
-            Function: !GetAtt Lambda.Arn
-  
-  Lambda:
-    Type: AWS::Lambda::Function
-    ...
+            Function: !GetAtt getDataFunction.Arn
 
   S3InvokeLambdaPermission:
     Type: AWS::Lambda::Permission
     Properties:
       Action: lambda:InvokeFunction
-      FunctionName: !Ref Lambda
+      FunctionName: !Ref getDataFunction
       Principal: s3.amazonaws.com
-      SourceArn: !Sub arn:aws:s3:::${BucketName}
+      SourceArn: !Sub arn:aws:s3:::${NotificationBucket}
 
   LambdaRole:
     Type: AWS::IAM::Role
@@ -51,20 +39,20 @@ Resources:
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
         Statement:
-        - Effect: Allow
-          Principal:
-            Service: lambda.amazonaws.com
-          Action:
-          - sts:AssumeRole
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action:
+              - sts:AssumeRole
       Path: '/'
       Policies:
-      - PolicyName: s3
-        PolicyDocument:
-          Statement:
-          - Effect: Allow
-            Action:
-              - s3:Get*
-            Resource:
-              - !Sub arn:aws:s3:::${BucketName}
-              - !Sub arn:aws:s3:::${BucketName}/*
+        - PolicyName: s3
+          PolicyDocument:
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:Get*
+                Resource:
+                  - !Sub arn:aws:s3:::${NotificationBucket}
+                  - !Sub arn:aws:s3:::${NotificationBucket}/*
 ```

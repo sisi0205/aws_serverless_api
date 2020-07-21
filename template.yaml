@@ -120,68 +120,45 @@ Resources:
             Path: /put_list
             Method: any
 
-  LambdaInvokePermission:
-    Type: 'AWS::Lambda::Permission'
+  DataArchiveS3Bucket:
+    Type: AWS::S3::Bucket
     Properties:
-      FunctionName: !GetAtt getDataFunction.Arn
-      Action: 'lambda:InvokeFunction'
-      Principal: s3.amazonaws.com
-      SourceAccount: !Ref 'AWS::AccountId'
-      SourceArn: !Sub 'arn:aws:s3:::${NotificationBucket}'
+      BucketName: !Ref NotificationBucket
+      NotificationConfiguration:
+        LambdaConfigurations:
+          - Event: 's3:ObjectCreated:*'
+            Function: !GetAtt getDataFunction.Arn
 
-  LambdaIAMRole:
-    Type: 'AWS::IAM::Role'
+  S3InvokeLambdaPermission:
+    Type: AWS::Lambda::Permission
+    Properties:
+      Action: lambda:InvokeFunction
+      FunctionName: !Ref getDataFunction
+      Principal: s3.amazonaws.com
+      SourceArn: !Sub arn:aws:s3:::${NotificationBucket}
+
+  LambdaRole:
+    Type: AWS::IAM::Role
     Properties:
       AssumeRolePolicyDocument:
-        Version: 2012-10-17
+        Version: '2012-10-17'
         Statement:
           - Effect: Allow
             Principal:
-              Service:
-                - lambda.amazonaws.com
+              Service: lambda.amazonaws.com
             Action:
-              - 'sts:AssumeRole'
-      Path: /
+              - sts:AssumeRole
+      Path: '/'
       Policies:
-        - PolicyName: root
+        - PolicyName: s3
           PolicyDocument:
-            Version: 2012-10-17
             Statement:
               - Effect: Allow
                 Action:
-                  - 's3:GetBucketNotification'
-                  - 's3:PutBucketNotification'
-                Resource: !Sub 'arn:aws:s3:::${NotificationBucket}'
-              - Effect: Allow
-                Action:
-                  - 'logs:CreateLogGroup'
-                  - 'logs:CreateLogStream'
-                  - 'logs:PutLogEvents'
-                Resource: 'arn:aws:logs:*:*:*'
-
-  CustomResourceLambdaFunction:
-    Type: 'AWS::Lambda::Function'
-    Properties:
-      Handler: notification.lambda_handler
-      Role: !GetAtt LambdaIAMRole.Arn
-      Runtime: python3.6
-      Timeout: 50
-#      CodeUri: src/notification
-
-
-
-
-
-
-
-#  LambdaTrigger:
-#    Type: AWS::Lambda::Permission
-#    DependsOn: LambdaInvokePermission
-#    Properties:
-#      ServiceToken: !GetAtt CustomResourceLambdaFunction.Arn
-#      LambdaArn: !GetAtt S3NotificationLambdaFunction.Arn
-#      Bucket: !Ref BucketName
-
+                  - s3:Get*
+                Resource:
+                  - !Sub arn:aws:s3:::${NotificationBucket}
+                  - !Sub arn:aws:s3:::${NotificationBucket}/*
 
 
   S3Bucket:
@@ -219,6 +196,7 @@ Resources:
                 - !Ref S3Bucket
                 - /*
       Bucket: !Ref S3Bucket
+
 
 
   ghcnTable:
