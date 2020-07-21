@@ -9,7 +9,6 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    CodeUri: src/
     Timeout: 3
 
 Parameters:
@@ -97,7 +96,7 @@ Resources:
   getDataFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-#      CodeUri: src/
+      CodeUri: ./src/
       Handler: app.app
       Runtime: python3.6
       Policies:
@@ -129,8 +128,9 @@ Resources:
 
 ## s3 notification
   S3NotificationFunction:
-    Type: 'AWS::Lambda::Function'
+    Type: 'AWS::Serverless::Function'
     Properties:
+      CodeUri: ./notification
       Runtime: python3.6
       Role: !GetAtt LambdaRole.Arn
       Handler: notification.lambda_handler
