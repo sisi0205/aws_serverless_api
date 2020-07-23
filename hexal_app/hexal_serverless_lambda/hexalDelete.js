@@ -1,38 +1,38 @@
-'use strict'
-const AWS = require('aws-sdk')
+'use strict';
+const AWS = require('aws-sdk');
 
-exports.handler = async (event) => {
-    // TODO implement
-    const doucumentClient = new AWS.DynamoDB.DocumentClient();
-    let responseBody = "";
-    let statusCode = 0;
+exports.handler = async (event, context) => {
+  const documentClient = new AWS.DynamoDB.DocumentClient();
 
-    const params = {
-        TableName: "Products",
-        Key: {
-            id: '12345',
-        }
+  let responseBody = "";
+  let statusCode = 0;
+
+  const { id } = event.pathParameters;
+
+  const params = {
+    TableName: "Products",
+    Key: {
+      id: id
     }
+  };
 
-    try {
-        // put data into dynamoDB
-        const data = await doucumentClient.delete(params).promise();
-        responseBody = JSON.stringify(data);
-        statusCode = 204;
+  try {
+    const data = await documentClient.delete(params).promise();
+    responseBody = JSON.stringify(data);
+    statusCode = 204;
+  } catch(err) {
+    responseBody = `Unable to delete product: ${err}`;
+    statusCode = 403;
+  }
 
-    } catch(err){
-        responseBody = `Unable to delete product: ${err}`;
-        statusCode = 403;
-    }
+  const response = {
+    statusCode: statusCode,
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Allow-Origin": "*"
+    },
+    body: responseBody
+  };
 
-    const response = {
-        statusCode: statusCode,
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body:responseBody
-    };
-
-    return response;
-
+  return response;
 };
