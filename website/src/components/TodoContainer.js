@@ -4,6 +4,7 @@ import Header from "./Header"
 import InputTodo from "./InputTodo"
 import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
+import './App.css';
 
 
 class TodoContainer extends React.Component {
@@ -34,7 +35,7 @@ class TodoContainer extends React.Component {
 
   addTodoItem = title => {
    axios
-    .post("https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/dev/table", {
+    .post("https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/dev", {
       Key: title,
       completed: false,
       title: title,
@@ -80,13 +81,33 @@ class TodoContainer extends React.Component {
 
   render() {
      return (
-     <div>
+     <div className="App">
      <Header />
      <InputTodo addTodoProps={this.addTodoItem} />
      <TodosList todos={this.state.todos}
      handleChangeProps={this.handleChange}
      deleteTodoProps={this.delTodo}
       />
+     <a
+          className="App-link"
+          href="https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/dev"
+          target="_blank"
+          rel=""
+        >
+         copy file to s3 bucket
+      </a>
+      <p>
+
+      </p>
+
+      <a
+          className="App-link"
+          href="https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/dev/table"
+          target="_blank"
+          rel=""
+       >
+          Table
+       </a>
      </div>
     )
   }

@@ -9,12 +9,12 @@ Description: >
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
-    Timeout: 3
+    Timeout: 20
 
 Parameters:
   NotificationBucket:
     Type: String
-    Description: S3 bucket that's used for the Lambda event notification
+    Description: S3 bucket that's used for the data Archive
     Default: ghcn-api-data-archive
   TableName:
     Type: String
@@ -82,15 +82,13 @@ Resources:
                   default:
                     statusCode: 200
                     ResponseParameters:
-                      method.response.header.Access-Control-Allow-Headers: "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'"
-                      method.response.header.Access-Control-Allow-Methods: "'GET,POST,PUT,DELETE,OPTIONS'"
-                      method.response.header.Access-Control-Allow-Origin: "'*'"
+                      method.response.header.Access-Control-Allow-Headers: "Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token"
+                      method.response.header.Access-Control-Allow-Methods: "GET,POST,PUT,DELETE,OPTIONS"
+                      method.response.header.Access-Control-Allow-Origin: "*"
                 uri:
                   !Sub arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${getDataFunction.Arn}/invocations
                 httpMethod: POST
                 type: aws_proxy
-
-
 
 
   getDataFunction:
@@ -100,9 +98,14 @@ Resources:
       Handler: app.app
       Runtime: python3.6
       Policies:
-          DynamoDBCrudPolicy:
+        - Statement:
+            - Effect: Allow
+              Action: "s3:*"
+              Resource: "*"
+        - DynamoDBCrudPolicy:
             TableName:
               !Ref ghcnTable
+
       Events:
         HelloWorld:
           Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
@@ -124,7 +127,6 @@ Resources:
           Properties:
             Path: /put_list
             Method: any
-
 
 ## s3 notification
   S3NotificationFunction:
@@ -218,7 +220,6 @@ Resources:
                 Resource:
                   - !Sub arn:aws:s3:::${NotificationBucket}
                   - !Sub arn:aws:s3:::${NotificationBucket}/*
-
 
 
 # website host

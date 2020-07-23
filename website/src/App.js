@@ -18,7 +18,7 @@ function App() {
         >
           Hello world
         </a>
-         <a
+        <a
           className="App-link"
           href="https://g4kmiqqxm5.execute-api.us-east-2.amazonaws.com/dev/table"
           target="_blank"

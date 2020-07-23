@@ -10,8 +10,11 @@ CORS(app)
 # app = Flask(__name__)
 ddb = boto3.resource('dynamodb')
 s3 = boto3.resource('s3')
-
+client = boto3.client('s3')
 table = ddb.Table('ghcn-api')
+source_bucket = "noaa-ghcn-pds"
+target_bucket = "ghcn-api-data-archive"
+
 # bucket_cors = s3.BucketCors('ghcn-api-s3bucket-8wp90fqi05ac')
 # response = bucket_cors.put(
 #     CORSConfiguration={
@@ -36,24 +39,28 @@ table = ddb.Table('ghcn-api')
 #
 # )
 
-
 @app.route('/')
 def index():
-    # return render_template('home.html')
-    data = {
-        "message": "Hello world"
+    # copy the file
+    response = client.list_objects(Bucket=source_bucket)
+    file_key = response['Contents'][2]['Key']
+    print(file_key)
+
+    ### create a copy_source dictionary
+    copy_source = {
+        'Bucket': source_bucket,
+        'Key': file_key
     }
-    return (
-        json.dumps(data),
-        200,
-       {
-            'Access-Control-Allow-Headers': 'Content-Type',
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'OPTIONS,POST,GET'
-        },
+    ### create a object
+    bucket = s3.Bucket(target_bucket)
+    obj = bucket.Object(file_key)
+    ### copy the source to the object
+    obj.copy(copy_source)
 
-
-    )
+    data = {
+        "message": file_key + " has been copied to "+target_bucket+"bucket"
+    }
+    return json_response(data)
 
 @app.route('/table', methods= ['GET','POST'])
 def post_file():
@@ -64,7 +71,7 @@ def post_file():
 
 @app.route('/put_list',methods= ['POST'])
 def put_list_file():
-    table.put_item(Item=request.form.to_dict())
+    # table.put_item(Item=request.form.to_dict())
     print(" here is the post method")
     return json_response({"message": "entry created"})
 
