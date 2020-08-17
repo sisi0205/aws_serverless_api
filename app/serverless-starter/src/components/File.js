@@ -1,11 +1,18 @@
 import React, { Component, Fragment }  from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import MachineLearningIcon from 'react-aws-icons/dist/aws/logo/MachineLearning';
 
 export default class FileAdmin extends Component {
   state = {
     isEditMode: false,
     updateFileType: this.props.type
   }
+
+  handleMLEdit = event => {
+    event.preventDefault();
+    this.props.handleMLEdit(this.props.name);
+  }
+
   handleFileEdit = event => {
     event.preventDefault();
     this.setState({ isEditMode: true });
@@ -18,6 +25,8 @@ export default class FileAdmin extends Component {
   }
 
 
+
+
   onFileTypeChange = event => this.setState({ "updateFileType": event.target.value });
 
   render() {
@@ -26,7 +35,9 @@ export default class FileAdmin extends Component {
       {
           this.props.isAdmin &&
           <Fragment>
-            <FontAwesomeIcon icon={["fal", "coffee"]} />
+           <button  onClick={event => this.props.handleMLEdit(this.props.name, event)} className="file-ML-icon">
+           <MachineLearningIcon />
+           </button>
             <a href="/" onClick={this.handleFileEdit} className="product-edit-icon">
               <FontAwesomeIcon icon="edit" />
             </a>

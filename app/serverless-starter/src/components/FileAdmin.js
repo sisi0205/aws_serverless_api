@@ -14,8 +14,21 @@ export default class FileAdmin extends Component {
   }
 
   handleQuery = async (fileType, fileName, event) => {
+  }
 
-
+  handleMLEdit = async (fileName,event) => {
+    try {
+      const res = await axios.get(`${config.api.invokeUrl}/ai/${fileName}`);
+      console.log(res.data)
+      const fileType = res.data;
+      const fileToUpdate = [...this.state.files].find(file => file.fileName === fileName);
+      const updatedFiles = [...this.state.files].filter(file => file.fileName !== fileName);
+      fileToUpdate.fileType = fileType;
+      updatedFiles.push(fileToUpdate);
+      this.setState({files: updatedFiles});
+    } catch (err) {
+      console.log(`An error has occurred: ${err}`);
+    }
   }
 
   handleAddFile = async (fileName, filePath, event) => {
@@ -24,7 +37,7 @@ export default class FileAdmin extends Component {
     try {
       const params = {
         "fileName": fileName,
-        "filePath": this.state.query.filePath
+        "filePath": filePath
       };
       await axios.post(`${config.api.invokeUrl}/files/${fileName}`, params);
       this.setState({ files: [...this.state.files, this.state.query] });
@@ -129,6 +142,7 @@ export default class FileAdmin extends Component {
                    this.state.files.map((file, index) =>
                         <File
                           isAdmin={true}
+                          handleMLEdit = {this.handleMLEdit}
                           handleUpdateFile={this.handleUpdateFile}
                           handleDeleteFile={this.handleDeleteFile}
                           name={file.fileName}

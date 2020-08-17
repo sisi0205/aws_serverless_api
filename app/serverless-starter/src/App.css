@@ -12,6 +12,14 @@ h1 {
   margin: 1em 0;
 }
 
+.file-ML-icon{
+  opacity: .7;
+  position: absolute;
+  right: 4.3rem;
+  top: .43rem;
+}
+
+
 .product-edit-icon {
   opacity: .7;
   position: absolute;
@@ -47,6 +55,8 @@ h1 {
 .features {
   padding-bottom: 3em;
 }
+
+
 
 body {
   visibility: visible !important;

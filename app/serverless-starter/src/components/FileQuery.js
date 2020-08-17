@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react';
 import File from './File';
 import axios from "axios";
+
 const config = require('../config.json');
+
 
 export default class FileQuery extends Component {
 
