@@ -7,21 +7,26 @@ exports.handler = async (event, context) => {
   let responseBody = "";
   let statusCode = 0;
 
-  const { id } = event.pathParameters;
+  const { fileName, fileType } = JSON.parse(event.body);
 
   const params = {
-    TableName: "Products",
+    TableName: "archive",
     Key: {
-      id: id
-    }
+      fileName: fileName,
+    },
+    UpdateExpression: "set fileType = :n",
+    ExpressionAttributeValues: {
+      ":n": fileType
+    },
+    ReturnValues: "UPDATED_NEW"
   };
 
   try {
-    const data = await documentClient.delete(params).promise();
+    const data = await documentClient.update(params).promise();
     responseBody = JSON.stringify(data);
     statusCode = 204;
   } catch(err) {
-    responseBody = `Unable to delete product: ${err}`;
+    responseBody = `Unable to update product: ${err}`;
     statusCode = 403;
   }
 

@@ -4,29 +4,26 @@ const AWS = require('aws-sdk');
 exports.handler = async (event, context) => {
   const documentClient = new AWS.DynamoDB.DocumentClient();
 
-  let responseBody = "";
+  let responseBody = "item has been deleted";
   let statusCode = 0;
 
-  const { id, productname } = JSON.parse(event.body);
+  // const { fileName, fileType } = JSON.parse(event.body);
+  const fileName = event.pathParameters.filename;
+  console.log(fileName);
 
   const params = {
-    TableName: "Products",
+    TableName: "archive",
     Key: {
-      id: id
-    },
-    UpdateExpression: "set productname = :n",
-    ExpressionAttributeValues: {
-      ":n": productname
-    },
-    ReturnValues: "UPDATED_NEW"
+      fileName: fileName
+    }
   };
 
   try {
-    const data = await documentClient.update(params).promise();
+    const data = await documentClient.delete(params).promise();
     responseBody = JSON.stringify(data);
     statusCode = 204;
   } catch(err) {
-    responseBody = `Unable to update product: ${err}`;
+    responseBody = `Unable to delete product: ${err}`;
     statusCode = 403;
   }
 
